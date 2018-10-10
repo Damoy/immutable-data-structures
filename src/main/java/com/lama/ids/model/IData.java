@@ -15,5 +15,6 @@ public interface IData {
 	public IData set(int index, int value);
 	public IData clone();
 	public IData reverse();
+	public IData increase(int of);
 	
 }

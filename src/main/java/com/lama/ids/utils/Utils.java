@@ -15,6 +15,10 @@ public final class Utils {
 	
 	private Utils(){}
 	
+	public static void assertTrue(boolean cond, String err) {
+		if(!cond) throw new IllegalStateException(err);
+	}
+	
 	public static <T> void println(T o){
 		System.out.println(o.toString());
 	}

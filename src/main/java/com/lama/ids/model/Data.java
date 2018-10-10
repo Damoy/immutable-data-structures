@@ -1,5 +1,7 @@
 package com.lama.ids.model;
 
+import com.lama.ids.utils.Utils;
+
 public class Data implements IData {
 
 	private int[] content;
@@ -10,6 +12,13 @@ public class Data implements IData {
 	
 	private Data(int... content){
 		this.content = new int[content.length];
+		for(int i = 0; i < content.length; ++i){
+			this.content[i] = content[i];
+		}
+	}
+	
+	private Data(int size, int... content){
+		this.content = new int[size];
 		for(int i = 0; i < content.length; ++i){
 			this.content[i] = content[i];
 		}
@@ -37,6 +46,17 @@ public class Data implements IData {
 			content[i] = content[content.length - i - 1];
 			content[content.length - i - 1] = tmp;
 		}
+		
+		return this;
+	}
+
+	@Override
+	public IData increase(int of) {
+		Utils.assertTrue(of > content.length, "Size provided incorrect");
+		int[] newContent = new int[of];
+		
+		for(int i = 0; i < content.length; ++i)
+			newContent[i] = content[i];
 		
 		return this;
 	}
