@@ -1,4 +1,4 @@
-package com.lama.ids.model;
+package com.dzoum.ids.model;
 
 public class Data implements IData {
 
@@ -15,21 +15,37 @@ public class Data implements IData {
 		}
 	}
 	
+	private Data(int size, int... content){
+		this.content = new int[size];
+		for(int i = 0; i < content.length; ++i){
+			this.content[i] = content[i];
+		}
+	}
+	
 	public static IData of(int size){
 		return new Data(size);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int get(int index) {
 		return content[index];
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IData set(int index, int value){
 		content[index] = value;
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IData reverse() {
 		for(int i = 0; i < content.length >> 1; ++i){
@@ -37,6 +53,21 @@ public class Data implements IData {
 			content[i] = content[content.length - i - 1];
 			content[content.length - i - 1] = tmp;
 		}
+		
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IData grow(int of) {
+		int[] newContent = new int[content.length + of];
+		
+		for(int i = 0; i < content.length; ++i)
+			newContent[i] = content[i];
+		
+		content = newContent;
 		
 		return this;
 	}
@@ -63,29 +94,31 @@ public class Data implements IData {
 		
 		Data d = (Data) o;
 		
-		if(d.getLength() != getLength())
+		if(d.getSize() != getSize())
 			return false;
 		
-		for(int i = 0; i < d.getLength(); ++i) {
-			if(d.get()[i] != get()[i])
+		for(int i = 0; i < d.getSize(); ++i) {
+			if(d.get(i) != get(i))
 				return false;
 		}
 		
 		return true;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public int getLength() {
+	public int getSize() {
 		return content.length;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IData clone(){
 		return new Data(content);
 	}
 
-	@Override
-	public int[] get() {
-		return content;
-	}
 }

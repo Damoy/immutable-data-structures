@@ -1,9 +1,11 @@
-package com.lama.ids.utils;
+package com.dzoum.ids.utils;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -15,6 +17,32 @@ public final class Utils {
 	
 	private Utils(){}
 	
+	/**
+	 * Assert a condition.
+	 * 
+	 * @param cond the condition to check
+	 * @param err message to throw
+	 * @param eclazz exception class to use
+	 */
+	public static void assertTrue(boolean cond, String err, Class<? extends Exception> eclazz) {
+		if(!cond) {
+			try {
+				Constructor<? extends Exception> ce = eclazz.getConstructor(String.class);
+				ce.newInstance(err);
+			} catch (NoSuchMethodException | SecurityException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} 
+		}
+	}
+	
 	public static <T> void println(T o){
 		System.out.println(o.toString());
 	}
@@ -23,15 +51,28 @@ public final class Utils {
 		System.out.print(o.toString());
 	}
 	
+	/**
+	 * Get random integer in range [min,max].
+	 */
 	public static int irand(int min, int max){
 		return SEED.nextInt((max - min) + 1) + min;
 	}
 	
-	public static long log2(long value){
-		return (int) (Math.log10(value) / Math.log10(2));
+	/**
+	 * Get log2 of inquired value.
+	 */
+	public static double log2(double value){
+		return Math.log10(value) / Math.log10(2);
 	}
 	
-	public static void toFile(String title, String content){
+	/**
+	 * Write some content to a file.
+	 * Overrides the file if it exists.
+	 * 
+	 * @param title the file title 
+	 * @param content the text to write
+	 */
+	public static void writeToFile(String title, String content){
 		title = filterTitle(title);
 		String ftitle = getOutputFilePath();
 		
