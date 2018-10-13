@@ -1,7 +1,11 @@
 package com.dzoum.ids.app;
 
+import com.dzoum.ids.core.mutable.AVLNode;
+import com.dzoum.ids.core.mutable.IAVLNode;
+import com.dzoum.ids.core.mutable.IMutableAVL;
 import com.dzoum.ids.core.mutable.IMutableHeap;
 import com.dzoum.ids.core.mutable.MinMutableHeap;
+import com.dzoum.ids.core.mutable.MutableAVL;
 import com.dzoum.ids.utils.Utils;
 
 /**
@@ -10,8 +14,14 @@ import com.dzoum.ids.utils.Utils;
 public class Application {
 
 	public static void main(String[] args) {
-		trialMMH();
-		trialMinMutableHeap();
+		// trialMMH();
+		// trialMinMutableHeap();
+		trialMAVL();
+	}
+	
+	private static void trialMAVL(){
+		IMutableAVL mavl = MutableAVL.build(10, 20, 30, 40, 50, 25);
+		mavl.preOrderPrint();
 	}
 	
 	private static void trialMMH() {
