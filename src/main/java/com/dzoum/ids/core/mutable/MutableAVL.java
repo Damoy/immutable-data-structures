@@ -22,7 +22,6 @@ public class MutableAVL implements IMutableAVL {
 			return node; // Duplicate keys not allowed
 
 		// Update height of this ancestor node
-		node.setHeight(1);
 		node.setHeight(1 + max(height(node.getLeftChild()), height(node.getRightChild())));
 
 		int balance = getBalance(node);
@@ -91,8 +90,7 @@ public class MutableAVL implements IMutableAVL {
 	}
 
 	private int max(int n1, int n2) {
-		int m = n1 > n2 ? n1 : n2;
-		return m;
+		return n1 > n2 ? n1 : n2;
 	}
 
 	private int height(IAVLNode node) {
@@ -130,15 +128,15 @@ public class MutableAVL implements IMutableAVL {
 		return null;
 	}
 	
-	public static IMutableAVL build(int rootKey, int... insertions){
-		IAVLNode root = new AVLNode(rootKey);
-		IMutableAVL mavl = new MutableAVL(root);
-		
-		for(int i = 0; i < insertions.length; ++i){
-			mavl.setRoot(mavl.insert(root, insertions[i]));
-		}
-		
-		return mavl;
-	}
+//	public static IMutableAVL build(int rootKey, int... insertions){
+//		IAVLNode root = new AVLNode(rootKey);
+//		IMutableAVL mavl = new MutableAVL(root);
+//		
+//		for(int i = 0; i < insertions.length; ++i){
+//			root = mavl.insert(root, insertions[i]);
+//		}
+//		
+//		return mavl;
+//	}
 
 }

@@ -87,8 +87,8 @@ public class MinMutableHeap implements IMutableHeap {
 			return;
 
 		// initialize children variables
-		int ileftchild = index * 2;
-		int irightChild = (index * 2) + 1;
+		int ileftchild = index << 1;
+		int irightChild = (index << 1) + 1;
 		int iminChild;
 
 		// check if right child does not exist

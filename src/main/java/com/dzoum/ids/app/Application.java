@@ -16,12 +16,16 @@ public class Application {
 	public static void main(String[] args) {
 		// trialMMH();
 		// trialMinMutableHeap();
-		trialMAVL();
+		trialInsertionMAVL();
 	}
 	
-	private static void trialMAVL(){
-		IMutableAVL mavl = MutableAVL.build(10, 20, 30, 40, 50, 25);
-		mavl.preOrderPrint();
+	private static void trialInsertionMAVL(){
+		// IMutableAVL mavl = MutableAVL.build(10, 20, 30, 40, 50, 25);
+		// mavl.preOrderPrint();
+		
+//		IAVLNode root = new AVLNode(10);
+//		IMutableAVL mAvl = new MutableAVL(root);
+//		mAvl.setRoot(mAvl.insert(root, key));
 	}
 	
 	private static void trialMMH() {
