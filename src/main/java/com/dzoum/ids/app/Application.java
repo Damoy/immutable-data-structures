@@ -13,20 +13,7 @@ import com.dzoum.ids.utils.Utils;
 public class Application {
 
 	public static void main(String[] args) {
-		// trialMAVL();
 		trialMAVL2();
-	}
-	
-	private static void trialMAVL(){
-		IMutableAVLBuilder builder = new MutableAVLBuilder();
-		builder.insert(10);
-		builder.insert(20);
-		builder.insert(30);
-		builder.insert(40);
-		builder.insert(50);
-		builder.insert(25);
-		IMutableAVL mavl = builder.build();
-		mavl.preOrderPrint();
 	}
 	
 	private static void trialMAVL2(){
