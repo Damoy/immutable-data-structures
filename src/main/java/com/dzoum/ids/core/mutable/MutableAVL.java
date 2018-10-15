@@ -1,6 +1,8 @@
 package com.dzoum.ids.core.mutable;
 
-// https://www.geeksforgeeks.org/avl-tree-set-1-insertion/
+import com.dzoum.ids.utils.Utils;
+
+// https://www.geeksforgeeks.org/avl-tree-set-2-deletion/
 public class MutableAVL implements IMutableAVL {
 
 	private IAVLNode root;
@@ -22,7 +24,6 @@ public class MutableAVL implements IMutableAVL {
 			return node; // Duplicate keys not allowed
 
 		// Update height of this ancestor node
-		node.setHeight(1);
 		node.setHeight(1 + max(height(node.getLeftChild()), height(node.getRightChild())));
 
 		int balance = getBalance(node);
@@ -91,8 +92,7 @@ public class MutableAVL implements IMutableAVL {
 	}
 
 	private int max(int n1, int n2) {
-		int m = n1 > n2 ? n1 : n2;
-		return m;
+		return n1 > n2 ? n1 : n2;
 	}
 
 	private int height(IAVLNode node) {
@@ -104,41 +104,172 @@ public class MutableAVL implements IMutableAVL {
 
 	@Override
 	public void preOrderPrint() {
+		StringBuilder sb = new StringBuilder();
+
 		if (root != null) {
-			System.out.print(root.getKey() + " ");
-			preOrderPrint(root.getLeftChild());
-			preOrderPrint(root.getRightChild());
+			sb.append(root.getKey());
+			sb.append(" ");
+			preOrderPrint(sb, root.getLeftChild());
+			preOrderPrint(sb, root.getRightChild());
 		}
-		
-	}
-	
-	private void preOrderPrint(IAVLNode node){
-		if (node != null) {
-			System.out.print(node.getKey() + " ");
-			preOrderPrint(node.getLeftChild());
-			preOrderPrint(node.getRightChild());
-		}
+
+		Utils.println(sb.toString());
 	}
 	
 	@Override
-	public void setRoot(IAVLNode root){
+	public void printWidthPath() {
+		StringBuilder sb = new StringBuilder();
+		
+		IAVLNode oldFather = root;
+		IAVLNode father = root;
+		IAVLNode leftChild = father.getLeftChild();
+		IAVLNode rightChild = father.getRightChild();
+		
+		while(father != null){
+			sb.append(father.getKey());
+			sb.append(" ");
+			
+			if(leftChild != null){
+				sb.append(leftChild.getKey());
+				sb.append(" ");
+			}
+			
+			if(rightChild != null){
+				sb.append(rightChild.getKey());
+				sb.append(" ");
+			}
+
+			// TODO
+			// if(oldFather == )
+			if(leftChild != null){
+				father = leftChild;
+			}
+			
+			leftChild = father.getLeftChild();
+			rightChild = father.getRightChild();
+		}
+
+		Utils.println(sb.toString());
+	}
+
+	private void preOrderPrint(StringBuilder sb, IAVLNode node) {
+		if (node != null) {
+			sb.append(node.getKey());
+			sb.append(" ");
+			preOrderPrint(sb, node.getLeftChild());
+			preOrderPrint(sb, node.getRightChild());
+		}
+	}
+
+	@Override
+	public void setRoot(IAVLNode root) {
 		this.root = root;
 	}
 
 	@Override
-	public IAVLNode remove() {
-		return null;
-	}
-	
-	public static IMutableAVL build(int rootKey, int... insertions){
-		IAVLNode root = new AVLNode(rootKey);
-		IMutableAVL mavl = new MutableAVL(root);
-		
-		for(int i = 0; i < insertions.length; ++i){
-			mavl.setRoot(mavl.insert(root, insertions[i]));
+	public IAVLNode remove(IAVLNode node, int key) {
+		if (node == null)
+			return node;
+
+		// If the key to be deleted is smaller than
+		// the root's key then it is located in the left subtree
+		if (key < node.getKey())
+			node.setLeftChild(remove(node.getLeftChild(), key));
+
+		// If the key to be deleted is greater than the
+		// root's key, then it lies in right subtree
+		else if (key > node.getKey())
+			node.setRightChild(remove(node.getRightChild(), key));
+
+		// if key is same as root's key, then this is the node
+		// to be deleted
+		else {
+			// node with only one child or no child
+			if ((node.getLeftChild() == null) || (node.getRightChild() == null)) {
+				IAVLNode tmp = null;
+				if (tmp == node.getLeftChild())
+					tmp = node.getRightChild();
+				else
+					tmp = node.getLeftChild();
+
+				// No child case
+				if (tmp == null) {
+					tmp = node;
+					node = null;
+				} else {
+					node = tmp;
+				}
+			} else {
+				// node with two children: Get the inorder
+				// successor (smallest in the right subtree)
+				IAVLNode tmp = getMinNode(node.getRightChild());
+
+				// Copy the inorder successor's data to this node
+				node.setKey(tmp.getKey());
+
+				// Delete the inorder successor
+				node.setRightChild(remove(node.getRightChild(), tmp.getKey()));
+			}
 		}
-		
-		return mavl;
+
+		// If the tree had only one node then return
+		if (node == null)
+			return node;
+
+		// STEP 2: UPDATE HEIGHT OF THE CURRENT NODE
+		node.setHeight(max(height(node.getLeftChild()), height(node.getRightChild())) + 1);
+
+		// STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to check whether
+		// this node became unbalanced)
+		int balance = getBalance(node);
+
+		// If this node becomes unbalanced, then there are 4 cases
+		// Left Left Case
+		if (balance > 1 && getBalance(node.getLeftChild()) >= 0)
+			return rightRotate(node);
+
+		// Left Right Case
+		if (balance > 1 && getBalance(node.getLeftChild()) < 0) {
+			node.setLeftChild(leftRotate(node.getLeftChild()));
+			return rightRotate(node);
+		}
+
+		// Right Right Case
+		if (balance < -1 && getBalance(node.getRightChild()) <= 0)
+			return leftRotate(node);
+
+		// Right Left Case
+		if (balance < -1 && getBalance(node.getRightChild()) > 0) {
+			node.setRightChild(rightRotate(node.getRightChild()));
+			return leftRotate(node);
+		}
+
+		return node;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return root == null;
+	}
+
+	@Override
+	public IAVLNode getMinNode(IAVLNode from) {
+		IAVLNode min = from;
+
+		while (min.getLeftChild() != null)
+			min = min.getLeftChild();
+
+		return min;
+	}
+
+	@Override
+	public int getMinValue(IAVLNode from) {
+		return getMinNode(from).getKey();
+	}
+
+	@Override
+	public IAVLNode getRoot() {
+		return root;
 	}
 
 }

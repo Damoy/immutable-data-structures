@@ -1,11 +1,10 @@
 package com.dzoum.ids.app;
 
-import com.dzoum.ids.core.mutable.AVLNode;
-import com.dzoum.ids.core.mutable.IAVLNode;
 import com.dzoum.ids.core.mutable.IMutableAVL;
+import com.dzoum.ids.core.mutable.IMutableAVLBuilder;
 import com.dzoum.ids.core.mutable.IMutableHeap;
 import com.dzoum.ids.core.mutable.MinMutableHeap;
-import com.dzoum.ids.core.mutable.MutableAVL;
+import com.dzoum.ids.core.mutable.MutableAVLBuilder;
 import com.dzoum.ids.utils.Utils;
 
 /**
@@ -14,14 +13,29 @@ import com.dzoum.ids.utils.Utils;
 public class Application {
 
 	public static void main(String[] args) {
-		// trialMMH();
-		// trialMinMutableHeap();
-		trialMAVL();
+		// trialMAVL();
+		trialMAVL2();
 	}
 	
 	private static void trialMAVL(){
-		IMutableAVL mavl = MutableAVL.build(10, 20, 30, 40, 50, 25);
+		IMutableAVLBuilder builder = new MutableAVLBuilder();
+		builder.insert(10);
+		builder.insert(20);
+		builder.insert(30);
+		builder.insert(40);
+		builder.insert(50);
+		builder.insert(25);
+		IMutableAVL mavl = builder.build();
 		mavl.preOrderPrint();
+	}
+	
+	private static void trialMAVL2(){
+		IMutableAVLBuilder builder = new MutableAVLBuilder();
+		builder.insert(9, 5, 10, 0, 6, 11, -1, 1, 2);
+		
+		builder.build().preOrderPrint();
+		builder.remove(10);
+		builder.build().preOrderPrint();
 	}
 	
 	private static void trialMMH() {

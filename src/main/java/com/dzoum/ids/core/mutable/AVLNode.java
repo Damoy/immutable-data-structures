@@ -10,6 +10,8 @@ public class AVLNode implements IAVLNode {
 	public AVLNode(int key) {
 		this.key = key;
 		this.height = 1;
+		this.leftChild = null;
+		this.rightChild = null;
 	}
 
 	@Override
@@ -42,10 +44,12 @@ public class AVLNode implements IAVLNode {
 		this.height = height;
 	}
 
+	@Override
 	public void setLeftChild(IAVLNode leftChild) {
 		this.leftChild = leftChild;
 	}
 
+	@Override
 	public void setRightChild(IAVLNode rightChild) {
 		this.rightChild = rightChild;
 	}
