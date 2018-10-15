@@ -1,6 +1,5 @@
 package com.dzoum.ids.app;
 
-import com.dzoum.ids.core.mutable.IMutableAVL;
 import com.dzoum.ids.core.mutable.IMutableAVLBuilder;
 import com.dzoum.ids.core.mutable.IMutableHeap;
 import com.dzoum.ids.core.mutable.MinMutableHeap;
@@ -20,9 +19,9 @@ public class Application {
 		IMutableAVLBuilder builder = new MutableAVLBuilder();
 		builder.insert(9, 5, 10, 0, 6, 11, -1, 1, 2);
 		
-		builder.build().preOrderPrint();
+		builder.build().printWidthPath();
 		builder.remove(10);
-		builder.build().preOrderPrint();
+		builder.build().printWidthPath();
 	}
 	
 	private static void trialMMH() {

@@ -11,7 +11,7 @@ public interface IMutableAVL {
 	public boolean isEmpty();
 	
 	public void setRoot(IAVLNode root);
-	public void preOrderPrint();
+	public void printPreOrder();
 	public void printWidthPath();  
 	
 }

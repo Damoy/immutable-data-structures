@@ -1,5 +1,8 @@
 package com.dzoum.ids.core.mutable;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import com.dzoum.ids.utils.Utils;
 
 public class MutableAVL implements IMutableAVL {
@@ -100,64 +103,46 @@ public class MutableAVL implements IMutableAVL {
 
 		return node.getHeight();
 	}
-
+	
 	@Override
-	public void preOrderPrint() {
+	public void printPreOrder() {
 		StringBuilder sb = new StringBuilder();
 
 		if (root != null) {
 			sb.append(root.getKey());
 			sb.append(" ");
-			preOrderPrint(sb, root.getLeftChild());
-			preOrderPrint(sb, root.getRightChild());
+			printPreOrder(sb, root.getLeftChild());
+			printPreOrder(sb, root.getRightChild());
 		}
 
 		Utils.println(sb.toString());
 	}
 	
-	@Override
-	public void printWidthPath() {
-		StringBuilder sb = new StringBuilder();
-		
-		IAVLNode oldFather = root;
-		IAVLNode father = root;
-		IAVLNode leftChild = father.getLeftChild();
-		IAVLNode rightChild = father.getRightChild();
-		
-		while(father != null){
-			sb.append(father.getKey());
-			sb.append(" ");
-			
-			if(leftChild != null){
-				sb.append(leftChild.getKey());
-				sb.append(" ");
-			}
-			
-			if(rightChild != null){
-				sb.append(rightChild.getKey());
-				sb.append(" ");
-			}
-
-			// TODO
-			// if(oldFather == )
-			if(leftChild != null){
-				father = leftChild;
-			}
-			
-			leftChild = father.getLeftChild();
-			rightChild = father.getRightChild();
-		}
-
-		Utils.println(sb.toString());
-	}
-
-	private void preOrderPrint(StringBuilder sb, IAVLNode node) {
+	private void printPreOrder(StringBuilder sb, IAVLNode node) {
 		if (node != null) {
 			sb.append(node.getKey());
 			sb.append(" ");
-			preOrderPrint(sb, node.getLeftChild());
-			preOrderPrint(sb, node.getRightChild());
+			printPreOrder(sb, node.getLeftChild());
+			printPreOrder(sb, node.getRightChild());
 		}
+	}
+	
+	@Override
+	public void printWidthPath() {
+		StringBuilder sb = new StringBuilder();
+		Queue<IAVLNode> nodes = new LinkedList<>();
+		nodes.add(root);
+		
+		while(!nodes.isEmpty()){
+			IAVLNode node = nodes.poll();
+			sb.append(node.getKey());
+			sb.append(" ");
+			
+			if(node.getLeftChild() != null) nodes.add(node.getLeftChild());
+			if(node.getRightChild() != null) nodes.add(node.getRightChild());
+		}
+		
+		Utils.println(sb.toString());
 	}
 
 	@Override
@@ -165,6 +150,7 @@ public class MutableAVL implements IMutableAVL {
 		this.root = root;
 	}
 
+	@Override
 	public IAVLNode remove(IAVLNode node, int key) {
 		if (node == null)
 			return node;
@@ -185,10 +171,8 @@ public class MutableAVL implements IMutableAVL {
 			// node with only one child or no child
 			if ((node.getLeftChild() == null) || (node.getRightChild() == null)) {
 				IAVLNode tmp = null;
-				if (tmp == node.getLeftChild())
-					tmp = node.getRightChild();
-				else
-					tmp = node.getLeftChild();
+				if (tmp == node.getLeftChild()) tmp = node.getRightChild();
+				else tmp = node.getLeftChild();
 
 				// No child case
 				if (tmp == null) {
@@ -214,10 +198,10 @@ public class MutableAVL implements IMutableAVL {
 		if (node == null)
 			return node;
 
-		// STEP 2: UPDATE HEIGHT OF THE CURRENT NODE
+		// update height of the current node
 		node.setHeight(max(height(node.getLeftChild()), height(node.getRightChild())) + 1);
 
-		// STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to check whether
+		// get the balance factor of this node (to check whether
 		// this node became unbalanced)
 		int balance = getBalance(node);
 
