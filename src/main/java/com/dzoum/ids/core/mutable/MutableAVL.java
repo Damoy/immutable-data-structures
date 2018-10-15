@@ -2,7 +2,6 @@ package com.dzoum.ids.core.mutable;
 
 import com.dzoum.ids.utils.Utils;
 
-// https://www.geeksforgeeks.org/avl-tree-set-2-deletion/
 public class MutableAVL implements IMutableAVL {
 
 	private IAVLNode root;
