@@ -1,4 +1,4 @@
-package com.dzoum.ids.core.mutable;
+package com.dzoum.ids.core.mutable.heap;
 
 /**
  * The mutable heaps interface.

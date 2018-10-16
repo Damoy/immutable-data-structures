@@ -1,10 +1,13 @@
-package com.dzoum.ids.core.mutable;
+package com.dzoum.ids.core.mutable.heap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import com.dzoum.ids.core.mutable.heap.IMutableHeap;
+import com.dzoum.ids.core.mutable.heap.MinMutableHeap;
 
 /**
  * Testing the min mutable heap.

@@ -1,5 +1,8 @@
 package com.dzoum.ids.model;
 
+/**
+ * {@link IData}
+ */
 public class Data implements IData {
 
 	private int[] content;

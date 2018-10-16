@@ -1,32 +1,21 @@
 package com.dzoum.ids.app;
 
-import com.dzoum.ids.core.mutable.IMutableAVLBuilder;
-import com.dzoum.ids.core.mutable.IMutableHeap;
-import com.dzoum.ids.core.mutable.MinMutableHeap;
-import com.dzoum.ids.core.mutable.MutableAVLBuilder;
+import com.dzoum.ids.core.mutable.heap.IMutableHeap;
+import com.dzoum.ids.core.mutable.heap.MinMutableHeap;
 import com.dzoum.ids.utils.Utils;
 
-/**
- * Entry point
- */
-public class Application {
+public class AppMinMutableHeap {
 
 	public static void main(String[] args) {
-		trialMAVL2();
+		trialSimple();
+		Utils.println("----------");
+		trialMinMutableHeap();
 	}
 	
-	private static void trialMAVL2(){
-		IMutableAVLBuilder builder = new MutableAVLBuilder();
-		builder.insert(9, 5, 10, 0, 6, 11, -1, 1, 2);
-		
-		builder.build().printWidthPath();
-		builder.remove(10);
-		builder.build().printWidthPath();
-	}
-	
-	private static void trialMMH() {
+	private static void trialSimple() {
 		IMutableHeap heap = new MinMutableHeap(10);
 		
+		Utils.println("Inserting...");
 		heap.insert(5);
 		heap.insert(2);
 		heap.insert(11);
@@ -36,8 +25,10 @@ public class Application {
 		heap.insert(3);
 		
 		heap.display();
+		Utils.println("Removing...");
 		heap.remove();
 		heap.display();
+		Utils.println("Removing...");
 		heap.remove();
 		heap.display();
 	}
@@ -65,5 +56,5 @@ public class Application {
 		Utils.println("Deletions done");
 		mh.display();
 	}
-
+	
 }

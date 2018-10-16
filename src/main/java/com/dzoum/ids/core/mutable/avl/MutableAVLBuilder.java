@@ -1,21 +1,30 @@
-package com.dzoum.ids.core.mutable;
+package com.dzoum.ids.core.mutable.avl;
 
 import com.dzoum.ids.utils.Utils;
 
+/**
+ * {@link IMutableAVLBuilder} 
+ */
 public class MutableAVLBuilder implements IMutableAVLBuilder {
 
 	private IMutableAVL mavl;
-	private IAVLNode root;
+	private IMutableAVLNode root;
 	
 	public MutableAVLBuilder() {
 		
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IMutableAVLBuilder insert(int key) {
-		if(root == null) {
-			root = new AVLNode(key);
+		if(mavl == null) {
+			root = new MutableAVLNode(key);
 			mavl = new MutableAVL(root);
+		} else if(mavl.getRoot() == null) {
+			root = new MutableAVLNode(key);
+			mavl.setRoot(root);
 		}
 		
 		mavl.setRoot(mavl.insert(root, key));
@@ -23,6 +32,9 @@ public class MutableAVLBuilder implements IMutableAVLBuilder {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IMutableAVLBuilder remove(int key) {
 		if(mavl == null || mavl.isEmpty()) {
@@ -35,11 +47,18 @@ public class MutableAVLBuilder implements IMutableAVLBuilder {
 		return this;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IMutableAVL build() {
+		if(mavl == null) mavl = new MutableAVL(null);
 		return mavl;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IMutableAVLBuilder clear() {
 		mavl = null;
@@ -47,6 +66,9 @@ public class MutableAVLBuilder implements IMutableAVLBuilder {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IMutableAVLBuilder insert(int... keys) {
 		for(Integer key : keys)
@@ -54,6 +76,9 @@ public class MutableAVLBuilder implements IMutableAVLBuilder {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public IMutableAVLBuilder remove(int... keys) {
 		for(Integer key : keys)
