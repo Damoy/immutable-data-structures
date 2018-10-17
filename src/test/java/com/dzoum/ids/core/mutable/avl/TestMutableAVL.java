@@ -8,10 +8,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
  * Testing the mutable AVL
  */
+@RunWith(JUnit4.class)
 public class TestMutableAVL {
 
 	private IMutableAVLBuilder builder;
@@ -40,6 +43,7 @@ public class TestMutableAVL {
 		assertEquals(AVLUtils.getMAVLMinNodeValue(mavl), 2);
 		assertNotNull(mavl.getRoot());
 		assertFalse(mavl.isEmpty());
+		assertTrue(mavl.isBalanced());
 		assertEquals(mavl.toStringWidthOrder(), "10 2 25");
 		assertEquals(mavl.toStringPreOrder(), "10 2 25");
 		
@@ -49,12 +53,14 @@ public class TestMutableAVL {
 		assertEquals(AVLUtils.getMAVLMinNodeValue(mavl), 1);
 		assertNotNull(mavl.getRoot());
 		assertFalse(mavl.isEmpty());
+		assertTrue(mavl.isBalanced());
 		
 		assertEquals(mavl.toStringWidthOrder(), "10 2 25 1 33");
 		assertEquals(mavl.toStringPreOrder(), "10 2 1 25 33");
 		
 		builder.insert(40, 67, 98);
-		
+
+		assertTrue(mavl.isBalanced());
 		assertEquals(mavl.toStringWidthOrder(), "10 2 33 1 25 67 40 98");
 		assertEquals(mavl.toStringPreOrder(), "10 2 1 33 25 67 40 98");
 	}

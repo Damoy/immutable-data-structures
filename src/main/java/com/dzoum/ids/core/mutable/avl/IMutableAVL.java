@@ -44,6 +44,11 @@ public interface IMutableAVL {
 	 * Is the AVL empty ?
 	 */
 	public boolean isEmpty();
+	
+	/**
+	 * Is the AVL balanced ?
+	 */
+	public boolean isBalanced();
 
 	/**
 	 * Set the AVL root.

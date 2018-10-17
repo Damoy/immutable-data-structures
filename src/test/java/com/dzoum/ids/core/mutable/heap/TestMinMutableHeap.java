@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import com.dzoum.ids.core.mutable.heap.IMutableHeap;
 import com.dzoum.ids.core.mutable.heap.MinMutableHeap;
@@ -12,6 +14,7 @@ import com.dzoum.ids.core.mutable.heap.MinMutableHeap;
 /**
  * Testing the min mutable heap.
  */
+@RunWith(JUnit4.class)
 public class TestMinMutableHeap {
 
 	private IMutableHeap mmh;
@@ -49,14 +52,14 @@ public class TestMinMutableHeap {
 		assertFalse(mmh.insert(4));
 	}
 	
-	@Test
+	@Test(expected = IllegalStateException.class)
 	public void testEmptyRemove() {
 		mmh = new MinMutableHeap(5);
-		assertEquals(mmh.remove(), Integer.MIN_VALUE);
-		assertEquals(mmh.remove(), Integer.MIN_VALUE);
+		mmh.remove();
+		mmh.remove();
 	}
 	
-	@Test
+	@Test(expected = IllegalStateException.class)
 	public void testFilledRemove() {
 		mmh = new MinMutableHeap(5);
 		
@@ -67,7 +70,7 @@ public class TestMinMutableHeap {
 		assertEquals(mmh.remove(), 2);
 		assertEquals(mmh.remove(), 5);
 		assertEquals(mmh.remove(), 254);
-		assertEquals(mmh.remove(), Integer.MIN_VALUE);
+		mmh.remove();
 	}
 	
 	@Test

@@ -233,6 +233,23 @@ public class MutableAVL implements IMutableAVL {
 		return node.getValue();
 	}
 
+	@Override
+	public boolean isBalanced() {
+		return isBalanced(root);
+	}
+	
+	private boolean isBalanced(IMutableAVLNode node){
+		if(node == null) return true;
+		
+		int lh = height(root.getLeftChild());
+		int rh = height(root.getRightChild());
+
+		if (Math.abs(lh - rh) <= 1 && isBalanced(node.getLeftChild()) && isBalanced(node.getRightChild()))
+			return true;
+
+		return false;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

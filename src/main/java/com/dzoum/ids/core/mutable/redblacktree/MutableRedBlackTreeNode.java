@@ -1,18 +1,19 @@
 package com.dzoum.ids.core.mutable.redblacktree;
 
-public class RedBlackTreeNode implements IRedBlackTreeNode {
+public class MutableRedBlackTreeNode implements IMutableRedBlackTreeNode {
 
 	public final static byte RED = 0;
 	public final static byte BLACK = 1;
+	public final static byte NULL = 2;
 	
 	private int value;
 	private byte color;
-	private IRedBlackTreeNode parent;
-	private IRedBlackTreeNode leftChild;
-	private IRedBlackTreeNode rightChild;
+	private IMutableRedBlackTreeNode parent;
+	private IMutableRedBlackTreeNode leftChild;
+	private IMutableRedBlackTreeNode rightChild;
 	
-	public RedBlackTreeNode(int value, byte color, IRedBlackTreeNode parent, IRedBlackTreeNode leftChild,
-			IRedBlackTreeNode rightChild) {
+	public MutableRedBlackTreeNode(int value, byte color, IMutableRedBlackTreeNode parent, IMutableRedBlackTreeNode leftChild,
+			IMutableRedBlackTreeNode rightChild) {
 		this.value = value;
 		this.color = color;
 		this.parent = parent;
@@ -20,14 +21,14 @@ public class RedBlackTreeNode implements IRedBlackTreeNode {
 		this.rightChild = rightChild;
 	}
 	
-	public RedBlackTreeNode(int value, byte color) {
+	public MutableRedBlackTreeNode(int value, byte color) {
 		this.value = value;
 		this.color = color;
 		this.parent = null;
 		this.leftChild = null;
 		this.rightChild = null;
 	}
-
+	
 	@Override
 	public int getValue() {
 		return value;
@@ -39,17 +40,17 @@ public class RedBlackTreeNode implements IRedBlackTreeNode {
 	}
 
 	@Override
-	public IRedBlackTreeNode getParent() {
+	public IMutableRedBlackTreeNode getParent() {
 		return parent;
 	}
 
 	@Override
-	public IRedBlackTreeNode getLeftChild() {
+	public IMutableRedBlackTreeNode getLeftChild() {
 		return leftChild;
 	}
 
 	@Override
-	public IRedBlackTreeNode getRightChild() {
+	public IMutableRedBlackTreeNode getRightChild() {
 		return rightChild;
 	}
 
@@ -64,22 +65,22 @@ public class RedBlackTreeNode implements IRedBlackTreeNode {
 	}
 
 	@Override
-	public void setParent(IRedBlackTreeNode parent) {
+	public void setParent(IMutableRedBlackTreeNode parent) {
 		this.parent = parent;
 	}
 
 	@Override
-	public void setLeftChild(IRedBlackTreeNode leftChild) {
+	public void setLeftChild(IMutableRedBlackTreeNode leftChild) {
 		this.leftChild = leftChild;
 	}
 
 	@Override
-	public void setRightChild(IRedBlackTreeNode rightChild) {
+	public void setRightChild(IMutableRedBlackTreeNode rightChild) {
 		this.rightChild = rightChild;
 	}
 
 	@Override
-	public IRedBlackTreeNode getBrother() {
+	public IMutableRedBlackTreeNode getBrother() {
 		if(parent == null)
 			return null;
 		
@@ -92,7 +93,7 @@ public class RedBlackTreeNode implements IRedBlackTreeNode {
 	}
 
 	@Override
-	public IRedBlackTreeNode getUncle() {
+	public IMutableRedBlackTreeNode getUncle() {
 		if(parent == null || parent.getParent() == null)
 			return null;
 	
@@ -123,16 +124,16 @@ public class RedBlackTreeNode implements IRedBlackTreeNode {
 
 	@Override
 	public boolean isRed() {
-		return color == RedBlackTreeNode.RED;
+		return color == MutableRedBlackTreeNode.RED;
 	}
 
 	@Override
 	public boolean isBlack() {
-		return color == RedBlackTreeNode.BLACK;
+		return color == MutableRedBlackTreeNode.BLACK;
 	}
 
 	@Override
-	public void moveDown(IRedBlackTreeNode newParent) {
+	public void moveDown(IMutableRedBlackTreeNode newParent) {
 		if(parent != null){
 			if(isLeftChild()){
 				parent.setLeftChild(newParent);
@@ -143,6 +144,39 @@ public class RedBlackTreeNode implements IRedBlackTreeNode {
 		
 		newParent.setParent(parent);
 		parent = newParent;
+	}
+
+	@Override
+	public void swapColor(IMutableRedBlackTreeNode with) {
+		if(with == null) return;
+		byte thisColor = color;
+		color = with.getColor();
+		with.setColor(thisColor);
+	}
+
+	@Override
+	public void swapValue(IMutableRedBlackTreeNode with) {
+		if(with == null) return;
+		int thisValue = value;
+		value = with.getValue();
+		with.setValue(thisValue);
+	}
+	
+	@Override
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("[");
+		sb.append(getColorRepresentation(color));
+		sb.append("|");
+		sb.append(value);
+		sb.append("]");
+		return sb.toString();
+	}
+	
+	private String getColorRepresentation(byte color){
+		if(color == RED) return "R";
+		if(color == BLACK) return "B";
+		throw new IllegalStateException("Unknown color !");
 	}
 
 }

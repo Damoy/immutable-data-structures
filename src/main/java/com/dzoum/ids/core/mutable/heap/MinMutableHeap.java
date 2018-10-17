@@ -62,7 +62,7 @@ public class MinMutableHeap implements IMutableHeap {
 	@Override
 	public int remove() {
 		if(data.get(0) == 0)
-			return Integer.MIN_VALUE;
+			throw new IllegalStateException("Cannot remove from empty heap !");
 		
 		// get min
 		int minVal = data.get(1);
