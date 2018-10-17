@@ -39,4 +39,9 @@ public interface IData {
 	 */
 	public IData grow(int of);
 	
+	/**
+	 * Get content.
+	 */
+	public int[] get();
+	
 }

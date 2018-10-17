@@ -124,4 +124,12 @@ public class Data implements IData {
 		return new Data(content);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int[] get() {
+		return content;
+	}
+
 }

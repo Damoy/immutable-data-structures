@@ -1,5 +1,7 @@
 package com.dzoum.ids.core.mutable.avl;
 
+import com.dzoum.ids.model.IData;
+
 /**
  * Mutable AVL structure builder.
  * 
@@ -45,5 +47,10 @@ public interface IMutableAVLBuilder {
 	 * Get a mutable AVL.
 	 */
 	public IMutableAVL build();
+	
+	/**
+	 * Build a mutable AVL given data.
+	 */
+	public IMutableAVL buildFrom(IData data);
 	
 }

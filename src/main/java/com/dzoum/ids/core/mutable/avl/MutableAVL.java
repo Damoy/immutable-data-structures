@@ -5,6 +5,8 @@ import java.util.Queue;
 
 import com.dzoum.ids.utils.Utils;
 
+import static com.dzoum.ids.core.mutable.avl.AVLUtils.*;
+
 /**
  * {@link IMutableAVL}
  */
@@ -103,13 +105,6 @@ public class MutableAVL implements IMutableAVL {
 		return n1 > n2 ? n1 : n2;
 	}
 
-	private int height(IMutableAVLNode node) {
-		if (node == null)
-			return 0;
-
-		return node.getHeight();
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -229,27 +224,10 @@ public class MutableAVL implements IMutableAVL {
 	@Override
 	public int getMinValue(IMutableAVLNode from) {
 		IMutableAVLNode node = getMinNode(from);
-		if(node == null) return Integer.MIN_VALUE;
+		if(node == null) throw new IllegalStateException("No minimum node found !");
 		return node.getValue();
 	}
 
-	@Override
-	public boolean isBalanced() {
-		return isBalanced(root);
-	}
-	
-	private boolean isBalanced(IMutableAVLNode node){
-		if(node == null) return true;
-		
-		int lh = height(root.getLeftChild());
-		int rh = height(root.getRightChild());
-
-		if (Math.abs(lh - rh) <= 1 && isBalanced(node.getLeftChild()) && isBalanced(node.getRightChild()))
-			return true;
-
-		return false;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */

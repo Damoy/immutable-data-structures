@@ -1,5 +1,6 @@
 package com.dzoum.ids.core.mutable.avl;
 
+import com.dzoum.ids.model.IData;
 import com.dzoum.ids.utils.Utils;
 
 /**
@@ -84,6 +85,15 @@ public class MutableAVLBuilder implements IMutableAVLBuilder {
 		for(Integer key : keys)
 			remove(key);
 		return this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVL buildFrom(IData data) {
+		insert(data.get());
+		return mavl;
 	}
 
 }

@@ -11,6 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import com.dzoum.ids.model.generation.Generator;
+
+import static com.dzoum.ids.core.mutable.avl.AVLUtils.*;
+
 /**
  * Testing the mutable AVL
  */
@@ -25,11 +29,11 @@ public class TestMutableAVL {
 		builder = new MutableAVLBuilder();
 	}
 	
-	@Test
+	@Test(expected = IllegalStateException.class)
 	public void testInit() {
 		mavl = builder.build();
 		assertNull(AVLUtils.getMAVLMinNode(mavl));
-		assertEquals(AVLUtils.getMAVLMinNodeValue(mavl), Integer.MIN_VALUE);
+		AVLUtils.getMAVLMinNodeValue(mavl); // throw IllegalStateException
 		assertNull(mavl.getRoot());
 		assertTrue(mavl.isEmpty());
 		assertEquals(mavl.toStringPreOrder(), "");
@@ -43,7 +47,7 @@ public class TestMutableAVL {
 		assertEquals(AVLUtils.getMAVLMinNodeValue(mavl), 2);
 		assertNotNull(mavl.getRoot());
 		assertFalse(mavl.isEmpty());
-		assertTrue(mavl.isBalanced());
+		assertTrue(isBalanced(mavl));
 		assertEquals(mavl.toStringWidthOrder(), "10 2 25");
 		assertEquals(mavl.toStringPreOrder(), "10 2 25");
 		
@@ -53,14 +57,14 @@ public class TestMutableAVL {
 		assertEquals(AVLUtils.getMAVLMinNodeValue(mavl), 1);
 		assertNotNull(mavl.getRoot());
 		assertFalse(mavl.isEmpty());
-		assertTrue(mavl.isBalanced());
+		assertTrue(isBalanced(mavl));
 		
 		assertEquals(mavl.toStringWidthOrder(), "10 2 25 1 33");
 		assertEquals(mavl.toStringPreOrder(), "10 2 1 25 33");
 		
 		builder.insert(40, 67, 98);
 
-		assertTrue(mavl.isBalanced());
+		assertTrue(isBalanced(mavl));
 		assertEquals(mavl.toStringWidthOrder(), "10 2 33 1 25 67 40 98");
 		assertEquals(mavl.toStringPreOrder(), "10 2 1 33 25 67 40 98");
 	}
@@ -95,6 +99,28 @@ public class TestMutableAVL {
 		builder.remove(56);
 		assertEquals(mavl.toStringWidthOrder(), "78 4 99 1");
 		assertEquals(mavl.toStringPreOrder(), "78 4 1 99");
+	}
+	
+	@Test
+	public void testInsertionsAuto1() {
+		long start = System.nanoTime();
+		int min = -100;
+		int max = 100;
+		int size = 1000;
+		mavl = builder.buildFrom(Generator.getInstance().randomGeneration(size, min, max));
+		assertTrue(AVLUtils.isValidMutableAVL(mavl, min, max));
+		System.out.println("Automatic insertions test 1 took " + (System.nanoTime() - start) / 1000000 + " ms.");
+	}
+	
+	@Test
+	public void testInsertionsAuto2() {
+		long start = System.nanoTime();
+		int min = -100000;
+		int max = 100000;
+		int size = 1000000;
+		mavl = builder.buildFrom(Generator.getInstance().randomGeneration(size, min, max));
+		assertTrue(AVLUtils.isValidMutableAVL(mavl, min, max));
+		System.out.println("Automatic insertions test 2 took " + (System.nanoTime() - start) / 1000000 + " ms.");
 	}
 	
 }
