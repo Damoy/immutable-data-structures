@@ -33,12 +33,12 @@ public class MinMutableHeap implements IMutableHeap {
 		// increase element
 		data.set(data.get(0), elt);
 		// heapify up
-		heapifyUp(data.get(0));
+		percolateUp(data.get(0));
 		
 		return true;
 	}
 
-	private void heapifyUp(int index) {
+	private void percolateUp(int index) {
 		// find the parent index
 		int iparent = index >> 1;
 
@@ -53,7 +53,7 @@ public class MinMutableHeap implements IMutableHeap {
 		data.set(index, parentVal);
 
 		// do the same with the new parent
-		heapifyUp(iparent);
+		percolateUp(iparent);
 	}
 
 	/**
@@ -75,12 +75,12 @@ public class MinMutableHeap implements IMutableHeap {
 		data.set(1, lastVal);
 		
 		// heapify down
-		heapifyDown(1);
+		percolateDown(1);
 		
 		return minVal;
 	}
 
-	private void heapifyDown(int index) {
+	private void percolateDown(int index) {
 		// check if leaf, if that's the case do nothing
 		// checks that parent is greater than current size
 		if ((index << 1) > data.get(0))
@@ -108,7 +108,7 @@ public class MinMutableHeap implements IMutableHeap {
 		data.set(index, childVal);
 		
 		// recursive algorithm
-		heapifyDown(iminChild);
+		percolateDown(iminChild);
 	}
 
 	/**
