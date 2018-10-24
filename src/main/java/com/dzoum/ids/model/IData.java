@@ -39,4 +39,14 @@ public interface IData {
 	 */
 	public IData grow(int of);
 	
+	/**
+	 * Get content.
+	 */
+	public int[] get();
+	
+	/**
+	 * Shuffle the content.
+	 */
+	public IData shuffle();
+	
 }

@@ -1,19 +1,11 @@
-package com.dzoum.ids.core.mutable.avl;
+package com.dzoum.ids.core.avl.mutable;
+
+import com.dzoum.ids.core.commons.INode;
 
 /**
  * A mutable AVL's node. 
  */
-public interface IMutableAVLNode {
-	
-	/**
-	 * Get the node value
-	 */
-	public int getValue();
-	
-	/**
-	 * Get the node height.
-	 */
-	public int getHeight();
+public interface IMutableAVLNode extends INode {
 
 	/**
 	 * Get the node left child
@@ -25,16 +17,6 @@ public interface IMutableAVLNode {
 	 * @return
 	 */
 	public IMutableAVLNode getRightChild();
-
-	/**
-	 * Set the node value.
-	 */
-	public void setValue(int value);
-	
-	/**
-	 * Set the node height.
-	 */
-	public void setHeight(int height);
 	
 	/**
 	 * Set the node left child. 

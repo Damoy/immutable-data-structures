@@ -1,8 +1,9 @@
-package com.dzoum.ids.core.mutable.redblacktree;
+package com.dzoum.ids.core.redblacktree.mutable;
 
-public interface IMutableRedBlackTreeNode {
+import com.dzoum.ids.core.commons.INode;
 
-	public int getValue();
+public interface IMutableRedBlackTreeNode extends INode {
+
 	public byte getColor();
 	public boolean isRightChild();
 	public boolean isLeftChild();
@@ -10,18 +11,34 @@ public interface IMutableRedBlackTreeNode {
 	public boolean isBlack();
 	public boolean hasRedChild();
 	public IMutableRedBlackTreeNode getParent();
-	public IMutableRedBlackTreeNode getLeftChild();
-	public IMutableRedBlackTreeNode getRightChild();
 	public IMutableRedBlackTreeNode getBrother();
 	public IMutableRedBlackTreeNode getUncle();
 	
-	public void setValue(int value);
 	public void setColor(byte color);
 	public void setParent(IMutableRedBlackTreeNode parent);
-	public void setLeftChild(IMutableRedBlackTreeNode leftChild);
-	public void setRightChild(IMutableRedBlackTreeNode rightChild);
 	public void swapColor(IMutableRedBlackTreeNode with);
 	public void swapValue(IMutableRedBlackTreeNode with);
 	public void moveDown(IMutableRedBlackTreeNode nodeParent);
+	
+	/**
+	 * Get the node left child
+	 */
+	public IMutableRedBlackTreeNode getLeftChild();
+	
+	/**
+	 * Get the node right child.
+	 * @return
+	 */
+	public IMutableRedBlackTreeNode getRightChild();
+	
+	/**
+	 * Set the node left child. 
+	 */
+	public void setLeftChild(IMutableRedBlackTreeNode leftChild);
+	
+	/**
+	 * Set the node right child.
+	 */
+	public void setRightChild(IMutableRedBlackTreeNode rightChild);
 	
 }

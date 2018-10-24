@@ -1,4 +1,4 @@
-package com.dzoum.ids.core.mutable.redblacktree;
+package com.dzoum.ids.core.redblacktree.mutable;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -33,7 +33,7 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 			// relate the new node with the correct one
 			newNode.setParent(searchNode);
 			
-			if(value < newNode.getValue()){
+			if(value < searchNode.getValue()){
 				searchNode.setLeftChild(newNode);
 			} else {
 				searchNode.setRightChild(newNode);
@@ -121,8 +121,7 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 	}
 
 	// left rotation given the node
-	@Override
-	public void leftRotate(IMutableRedBlackTreeNode node) {
+	private void leftRotate(IMutableRedBlackTreeNode node) {
 		// node's right child is the new parent
 		IMutableRedBlackTreeNode newParent = node.getRightChild();
 		
@@ -145,8 +144,7 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 		newParent.setLeftChild(node);
 	}
 
-	@Override
-	public void rightRotate(IMutableRedBlackTreeNode node) {
+	private void rightRotate(IMutableRedBlackTreeNode node) {
 		// new parent is node's left child
 		IMutableRedBlackTreeNode newParent = node.getLeftChild();
 		
@@ -169,8 +167,7 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 	}
 
 	// Finds node that don't have a left child in the given node's subtree
-	@Override
-	public IMutableRedBlackTreeNode findNodeSuccessor(IMutableRedBlackTreeNode node) {
+	private IMutableRedBlackTreeNode findNodeSuccessor(IMutableRedBlackTreeNode node) {
 		IMutableRedBlackTreeNode successor = node;
 		
 		while(successor.getLeftChild() != null)
@@ -227,6 +224,40 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 	@Override
 	public void printPreOrder() {
 		Utils.println(toStringPreOrder());
+	}
+
+	@Override
+	public IMutableRedBlackTreeNode getMinNode(IMutableRedBlackTreeNode from) {
+		if(from == null) return from;
+		
+		IMutableRedBlackTreeNode min = from;
+
+		while (min.getLeftChild() != null)
+			min = min.getLeftChild();
+
+		return min;
+	}
+
+	@Override
+	public IMutableRedBlackTreeNode getRoot() {
+		return root;
+	}
+
+	@Override
+	public int getMinValue(IMutableRedBlackTreeNode from) {
+		IMutableRedBlackTreeNode node = getMinNode(from);
+		if(node == null) throw new IllegalStateException("No minimum node found !");
+		return node.getValue();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return root == null;
+	}
+
+	@Override
+	public void setRoot(IMutableRedBlackTreeNode root) {
+		this.root = root;
 	}
 	
 }

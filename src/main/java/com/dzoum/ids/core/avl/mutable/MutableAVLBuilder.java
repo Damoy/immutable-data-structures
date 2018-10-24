@@ -1,5 +1,6 @@
-package com.dzoum.ids.core.mutable.avl;
+package com.dzoum.ids.core.avl.mutable;
 
+import com.dzoum.ids.model.IData;
 import com.dzoum.ids.utils.Utils;
 
 /**
@@ -84,6 +85,31 @@ public class MutableAVLBuilder implements IMutableAVLBuilder {
 		for(Integer key : keys)
 			remove(key);
 		return this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVL buildFrom(IData data) {
+		insert(data.get());
+		return mavl;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws NotMutableAVLException 
+	 */
+	@Override
+	public IMutableAVL safeBuildFrom(IData data, int dataMinValue, int dataMaxValue) throws NotMutableAVLException {
+		for(int i = 0; i < data.getSize(); ++i) {
+			insert(data.get(i)).build();
+			
+			if(!Utils.isValidMutableAVL(mavl, dataMinValue, dataMaxValue))
+				throw new NotMutableAVLException();
+		}
+		
+		return mavl;
 	}
 
 }

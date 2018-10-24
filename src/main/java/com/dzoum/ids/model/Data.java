@@ -1,5 +1,8 @@
 package com.dzoum.ids.model;
 
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * {@link IData}
  */
@@ -122,6 +125,28 @@ public class Data implements IData {
 	@Override
 	public IData clone(){
 		return new Data(content);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int[] get() {
+		return content;
+	}
+
+	@Override
+	public IData shuffle() {
+		Random rnd = ThreadLocalRandom.current();
+		
+		for (int i = content.length - 1; i > 0; --i) {
+			int index = rnd.nextInt(i + 1);
+			int a = content[index];
+			content[index] = content[i];
+			content[i] = a;
+		}
+		
+		return this;
 	}
 
 }

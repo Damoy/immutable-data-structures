@@ -1,4 +1,4 @@
-package com.dzoum.ids.core.mutable.heap;
+package com.dzoum.ids.core.heap.mutable;
 
 import com.dzoum.ids.model.Data;
 import com.dzoum.ids.model.IData;

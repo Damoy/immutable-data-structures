@@ -1,7 +1,7 @@
 package com.dzoum.ids.app;
 
-import com.dzoum.ids.core.mutable.heap.IMutableHeap;
-import com.dzoum.ids.core.mutable.heap.MinMutableHeap;
+import com.dzoum.ids.core.heap.mutable.IMutableHeap;
+import com.dzoum.ids.core.heap.mutable.MinMutableHeap;
 import com.dzoum.ids.utils.Utils;
 
 public class AppMinMutableHeap {

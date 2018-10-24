@@ -10,12 +10,110 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import com.dzoum.ids.core.avl.mutable.IMutableAVL;
+import com.dzoum.ids.core.avl.mutable.IMutableAVLNode;
+import com.dzoum.ids.core.commons.INode;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTree;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTreeNode;
+import com.dzoum.ids.core.redblacktree.mutable.MutableRedBlackTreeNode;
+
 public final class Utils {
 
 	private final static Random SEED = new Random();
 	private final static Map<String, Integer> MEMORY = new HashMap<>();
 	
 	private Utils(){}
+	
+	public static INode getMAVLMinNode(IMutableAVL mavl) {
+		return mavl.getMinNode(mavl.getRoot());
+	}
+	
+	public static int getMAVLMinNodeValue(IMutableAVL mavl) {
+		return mavl.getMinValue(mavl.getRoot());
+	}
+	
+	public static int getNodeHeight(INode node) {
+		if (node == null)
+			return 0;
+
+		return node.getHeight();
+	}
+	
+	public static boolean isValidMutableAVL(IMutableAVL mavl, int minValue, int maxValue) {
+		return isMAVLUtil(mavl.getRoot(), minValue, maxValue) && isMAVLBalanced(mavl);
+	}
+
+	private static boolean isMAVLUtil(IMutableAVLNode node, int min, int max) {
+		if (node == null)
+			return true;
+
+		if (node.getValue() < min || node.getValue() > max)
+			return false;
+
+		return (isMAVLUtil(node.getLeftChild(), min, node.getValue() - 1)
+				&& isMAVLUtil(node.getRightChild(), node.getValue() + 1, max));
+	}
+	
+	public static boolean isMAVLBalanced(IMutableAVL mavl){
+		return isMAVLNodeBalanced(mavl.getRoot());
+	}
+	
+	public static boolean isMAVLNodeBalanced(IMutableAVLNode node){
+		if(node == null) return true;
+		
+		return (Math.abs(getNodeHeight(node.getLeftChild()) - getNodeHeight(node.getRightChild())) <= 1
+				&& isMAVLNodeBalanced(node.getLeftChild())
+				&& isMAVLNodeBalanced(node.getRightChild()));
+	}
+	
+	public static IMutableRedBlackTreeNode getMRBTMinNode(IMutableRedBlackTree mrbt) {
+		return mrbt.getMinNode(mrbt.getRoot());
+	}
+	
+	public static int getMRBTMinNodeValue(IMutableRedBlackTree mrbt) {
+		return mrbt.getMinValue(mrbt.getRoot());
+	}
+	
+	public static boolean isValidMRBT(IMutableRedBlackTree mrbt, int min, int max) {
+		return isValidMRBTNode(mrbt.getRoot(), min, max, MutableRedBlackTreeNode.BLACK)
+				&& isMRBTBalanced(mrbt);
+	}
+	
+	private static boolean isValidMRBTNode(IMutableRedBlackTreeNode node, int min, int max, byte expectedColor) {
+		if(node == null)
+			return true;
+		
+		if (node.getValue() < min || node.getValue() > max || node.getColor() != expectedColor) {
+			println(node.getValue());
+			println(min);
+			println(max);
+			println(node.getColor());
+			println("father: " + node.getParent().getColor());
+			println(expectedColor);
+			return false;
+		}
+		
+		byte nextLayerColor = expectedColor == MutableRedBlackTreeNode.BLACK ? MutableRedBlackTreeNode.RED : MutableRedBlackTreeNode.BLACK;
+		
+		return (isValidMRBTNode(node.getLeftChild(), min, node.getValue() - 1, nextLayerColor)
+				&& isValidMRBTNode(node.getRightChild(), node.getValue() + 1, max, nextLayerColor));
+	}
+	
+	public static boolean isMRBTBalanced(IMutableRedBlackTree mrbt){
+		return isMRBTNodeBalanced(mrbt.getRoot());
+	}
+	
+	public static boolean isMRBTNodeBalanced(IMutableRedBlackTreeNode node){
+		if(node == null) return true;
+		
+		return (Math.abs(getNodeHeight(node.getLeftChild()) - getNodeHeight(node.getRightChild())) <= 1
+				&& isMRBTNodeBalanced(node.getLeftChild())
+				&& isMRBTNodeBalanced(node.getRightChild()));
+	}
+	
+	public static int max(int n1, int n2) {
+		return n1 > n2 ? n1 : n2;
+	}
 	
 	/**
 	 * Assert a condition.

@@ -1,4 +1,4 @@
-package com.dzoum.ids.core.mutable.avl;
+package com.dzoum.ids.core.avl.mutable;
 
 /**
  * A mutable AVL.
@@ -45,11 +45,6 @@ public interface IMutableAVL {
 	 */
 	public boolean isEmpty();
 	
-	/**
-	 * Is the AVL balanced ?
-	 */
-	public boolean isBalanced();
-
 	/**
 	 * Set the AVL root.
 	 */

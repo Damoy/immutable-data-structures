@@ -1,4 +1,4 @@
-package com.dzoum.ids.core.mutable.heap;
+package com.dzoum.ids.core.heap.mutable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.dzoum.ids.core.mutable.heap.IMutableHeap;
-import com.dzoum.ids.core.mutable.heap.MinMutableHeap;
+import com.dzoum.ids.core.heap.mutable.IMutableHeap;
+import com.dzoum.ids.core.heap.mutable.MinMutableHeap;
 
 /**
  * Testing the min mutable heap.
