@@ -10,22 +10,190 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import com.dzoum.ids.core.avl.mutable.IMutableAVL;
+import com.dzoum.ids.core.avl.mutable.IMutableAVLNode;
+import com.dzoum.ids.core.commons.INode;
+import com.dzoum.ids.core.heap.mutable.array.IMutableArrayHeap;
+import com.dzoum.ids.core.heap.mutable.node.IHeapNode;
+import com.dzoum.ids.core.heap.mutable.node.IMutableNodeHeap;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTree;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTreeNode;
+import com.dzoum.ids.core.redblacktree.mutable.RedBlackTreeException;
+
 public final class Utils {
 
-	private final static Random SEED = new Random();
+	private static Random SEED = new Random();
 	private final static Map<String, Integer> MEMORY = new HashMap<>();
+
+	private Utils() {
+	}
 	
-	private Utils(){}
+	public static void randomize() {
+		SEED = new Random();
+	}
 	
+	public static void setRandomSeed(long seed) {
+		SEED = new Random(seed);
+	}
+
+	public static INode getMutableAVLMinNode(IMutableAVL mavl) {
+		return mavl.getMinNode(mavl.getRoot());
+	}
+
+	public static int getMutableAVLMinNodeValue(IMutableAVL mavl) {
+		return mavl.getMinValue(mavl.getRoot());
+	}
+
+	public static int getNodeHeight(INode node) {
+		if (node == null)
+			return 0;
+
+		return node.getHeight();
+	}
+
+	public static boolean isMutableAVL(IMutableAVL mavl, int minValue, int maxValue) {
+		return isMutableAVLUtil(mavl.getRoot(), minValue, maxValue) && isMutableAVLBalanced(mavl);
+	}
+
+	private static boolean isMutableAVLUtil(IMutableAVLNode node, int min, int max) {
+		if (node == null)
+			return true;
+
+		if (node.getValue() < min || node.getValue() > max)
+			return false;
+
+		return (isMutableAVLUtil(node.getLeftChild(), min, node.getValue() - 1)
+				&& isMutableAVLUtil(node.getRightChild(), node.getValue() + 1, max));
+	}
+
+	public static boolean isMutableAVLBalanced(IMutableAVL mavl) {
+		return isMutableAVLNodeBalanced(mavl.getRoot());
+	}
+
+	private static boolean isMutableAVLNodeBalanced(IMutableAVLNode node) {
+		if (node == null)
+			return true;
+
+		return (Math.abs(getNodeHeight(node.getLeftChild()) - getNodeHeight(node.getRightChild())) <= 1
+				&& isMutableAVLNodeBalanced(node.getLeftChild()) && isMutableAVLNodeBalanced(node.getRightChild()));
+	}
+
+	public static IMutableRedBlackTreeNode getMutableRedBlackTreeMinNode(IMutableRedBlackTree mrbt) {
+		return mrbt.getMinNode(mrbt.getRoot());
+	}
+
+	public static int getMutableRedBlackTreeMinNodeValue(IMutableRedBlackTree mrbt) {
+		return mrbt.getMinValue(mrbt.getRoot());
+	}
+
+	public static boolean isRedBlackTree(IMutableRedBlackTree mrbt) throws RedBlackTreeException {
+		boolean rootIsBlack = mrbt.getRoot().isBlack();
+		if(!rootIsBlack) return false;
+		
+		int left = getBlackPathsCount(mrbt.getRoot().getLeftChild());
+		int right = getBlackPathsCount(mrbt.getRoot().getRightChild());
+		return left == right;
+	}
+	
+	private static int getBlackPathsCount(IMutableRedBlackTreeNode node) throws RedBlackTreeException {
+		if(node == null) return 0;
+		
+		// check red red breach
+		if(node.getParent() != null && node.getParent().isRed() && node.isRed()) {
+			throw new RedBlackTreeException("Red Red breach !");
+		}
+		
+		if(node.getParent() != null) {
+			if(node.isLeftChild()) {
+				if(node.getValue() > node.getParent().getValue())
+					throw new RedBlackTreeException("Left child superior to parent !");
+			} else {
+				if(node.getValue() < node.getParent().getValue())
+					throw new RedBlackTreeException("Right child inferior to parent !");
+			}
+		}
+		
+		int currentBlackCount = node.isBlack() ? 1 : 0;
+		return currentBlackCount + getBlackPathsCount(node.getLeftChild())
+								+ getBlackPathsCount(node.getRightChild());
+	}
+		
+	// Function to check binary tree is a Heap or Not.
+	public boolean isHeap(IMutableNodeHeap heap) {
+		if (heap.getRoot() == null)
+			return true;
+
+		return isHeapComplete(heap.getRoot(), 0,countHeapNodes(heap.getRoot()))
+				&& isHeapUtil(heap.getRoot());
+	}
+	
+	// This function checks if the binary tree is complete or not
+	private boolean isHeapComplete(IHeapNode root, int index, int nodesNb) {
+		// An empty tree is complete
+		if (root == null)
+			return true;
+
+		// If index assigned to current node is more than
+		// number of nodes in tree, then tree is not complete
+		if (index >= nodesNb)
+			return false;
+
+		// Recur for left and right subtrees
+		return isHeapComplete(root.getLeftChild(), (index << 1) + 1, nodesNb)
+				&& isHeapComplete(root.getRightChild(), (index << 1) + 2, nodesNb);
+	}
+	
+	// Checks the heap property in the tree.
+	private boolean isHeapUtil(IHeapNode root) {
+		// Base case : single node satisfies property
+		if (root.getLeftChild() == null && root.getRightChild() == null)
+			return true;
+
+		// node will be in second last level
+		if (root.getRightChild() == null) {
+			// check heap property at Node
+			// No recursive call , because no need to check last level
+			return root.getValue() >= root.getLeftChild().getValue();
+		} else {
+			// Check heap property at Node and
+			// Recursive check heap property at left and right subtree
+			if (root.getValue() >= root.getLeftChild().getValue() && root.getValue() >= root.getRightChild().getValue())
+				return isHeapUtil(root.getLeftChild()) && isHeapUtil(root.getRightChild());
+			else
+				return false;
+		}
+	}
+	
+	private int countHeapNodes(IHeapNode root) {
+		if (root == null)
+			return 0;
+		
+		return (1 + countHeapNodes(root.getLeftChild()) + countHeapNodes(root.getRightChild()));
+	}
+	
+	private int countHeapNodes(IMutableArrayHeap heap, int index) {
+		if (index >= heap.getCapacity())
+			return 0;
+		
+		return (1 + countHeapNodes(heap, (index << 1)) + countHeapNodes(heap, (index << 1) + 1));
+	}
+
+	public static int max(int n1, int n2) {
+		return n1 > n2 ? n1 : n2;
+	}
+
 	/**
 	 * Assert a condition.
 	 * 
-	 * @param cond the condition to check
-	 * @param err message to throw
-	 * @param eclazz exception class to use
+	 * @param cond
+	 *            the condition to check
+	 * @param err
+	 *            message to throw
+	 * @param eclazz
+	 *            exception class to use
 	 */
 	public static void assertTrue(boolean cond, String err, Class<? extends Exception> eclazz) {
-		if(!cond) {
+		if (!cond) {
 			try {
 				Constructor<? extends Exception> ce = eclazz.getConstructor(String.class);
 				ce.newInstance(err);
@@ -39,44 +207,45 @@ public final class Utils {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
-			} 
+			}
 		}
 	}
-	
-	public static <T> void println(T o){
+
+	public static <T> void println(T o) {
 		System.out.println(o.toString());
 	}
-	
-	public static <T> void print(T o){
+
+	public static <T> void print(T o) {
 		System.out.print(o.toString());
 	}
-	
+
 	/**
 	 * Get random integer in range [min,max].
 	 */
-	public static int irand(int min, int max){
+	public static int irand(int min, int max) {
 		return SEED.nextInt((max - min) + 1) + min;
 	}
-	
+
 	/**
 	 * Get log2 of inquired value.
 	 */
-	public static double log2(double value){
+	public static double log2(double value) {
 		return Math.log10(value) / Math.log10(2);
 	}
-	
+
 	/**
-	 * Write some content to a file.
-	 * Overrides the file if it exists.
+	 * Write some content to a file. Overrides the file if it exists.
 	 * 
-	 * @param title the file title 
-	 * @param content the text to write
+	 * @param title
+	 *            the file title
+	 * @param content
+	 *            the text to write
 	 */
-	public static void writeToFile(String title, String content){
+	public static void writeToFile(String title, String content) {
 		title = filterTitle(title);
 		String ftitle = getOutputFilePath();
-		
-		if(MEMORY.containsKey(title)){
+
+		if (MEMORY.containsKey(title)) {
 			int lastId = MEMORY.get(title);
 			ftitle += title + (++lastId);
 			MEMORY.put(ftitle, lastId);
@@ -84,7 +253,7 @@ public final class Utils {
 			MEMORY.put(title, 0);
 			ftitle += title;
 		}
-		
+
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(ftitle)));
 			bw.write(content);
@@ -93,13 +262,27 @@ public final class Utils {
 			e.printStackTrace();
 		}
 	}
-	
-	private static String filterTitle(String title){
+
+	public static int compareInts(int v1, int v2) {
+		return v1 > v2 ? 1 : v1 == v2 ? 0 : -1;
+	}
+
+	private static String filterTitle(String title) {
 		return title.replaceAll("[ *$^!;:,=)('\"&]", "_");
 	}
-	
-	private static String getOutputFilePath(){
+
+	private static String getOutputFilePath() {
 		return "./src/main/resources/output/";
 	}
 	
+	public static final class Pair<A, B> {
+		public final A first;
+		public final B second;
+
+		public Pair(A first, B second) {
+			this.first = first;
+			this.second = second;
+		}
+	}
+
 }

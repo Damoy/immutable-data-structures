@@ -1,7 +1,7 @@
 package com.dzoum.ids.app;
 
-import com.dzoum.ids.core.mutable.redblacktree.IMutableRedBlackTree;
-import com.dzoum.ids.core.mutable.redblacktree.MutableRedBlackTree;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTree;
+import com.dzoum.ids.core.redblacktree.mutable.MutableRedBlackTree;
 
 public class AppMutableRedBlackTree {
 

@@ -1,4 +1,4 @@
-package com.dzoum.ids.core.mutable.avl;
+package com.dzoum.ids.core.avl.mutable;
 
 import com.dzoum.ids.model.IData;
 
@@ -53,4 +53,10 @@ public interface IMutableAVLBuilder {
 	 */
 	public IMutableAVL buildFrom(IData data);
 	
+	/**
+	 * Build a mutable AVL given data.<br>
+	 * Checks that each step production is still a mutable AVL.<br>
+	 * If not, throws a NotMutableAVLException.<br>
+	 */
+	public IMutableAVL safeBuildFrom(IData data, int dataMinValue, int dataMaxValue) throws NotMutableAVLException;
 }

@@ -1,13 +1,16 @@
-package com.dzoum.ids.core.mutable.redblacktree;
+package com.dzoum.ids.core.redblacktree.mutable;
+
+import static com.dzoum.ids.utils.Utils.*;
 
 public class MutableRedBlackTreeNode implements IMutableRedBlackTreeNode {
 
 	public final static byte RED = 0;
 	public final static byte BLACK = 1;
-	public final static byte NULL = 2;
 	
 	private int value;
+	private int height;
 	private byte color;
+	
 	private IMutableRedBlackTreeNode parent;
 	private IMutableRedBlackTreeNode leftChild;
 	private IMutableRedBlackTreeNode rightChild;
@@ -69,15 +72,6 @@ public class MutableRedBlackTreeNode implements IMutableRedBlackTreeNode {
 		this.parent = parent;
 	}
 
-	@Override
-	public void setLeftChild(IMutableRedBlackTreeNode leftChild) {
-		this.leftChild = leftChild;
-	}
-
-	@Override
-	public void setRightChild(IMutableRedBlackTreeNode rightChild) {
-		this.rightChild = rightChild;
-	}
 
 	@Override
 	public IMutableRedBlackTreeNode getBrother() {
@@ -173,10 +167,53 @@ public class MutableRedBlackTreeNode implements IMutableRedBlackTreeNode {
 		return sb.toString();
 	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(!(o instanceof IMutableRedBlackTreeNode)) return false;
+		
+		IMutableRedBlackTreeNode onode = (IMutableRedBlackTreeNode) o;
+		
+		boolean value = getValue() == onode.getValue();
+		boolean color = getColor() == onode.getColor();
+		
+		boolean parent = getParent() == null ? (onode.getParent() == null)
+				: getParent().equals(onode.getParent());
+		
+		boolean left = getLeftChild() == null ? (onode.getLeftChild() == null)
+				: getLeftChild().equals(onode.getLeftChild());
+		
+		boolean right = getRightChild() == null ? (onode.getRightChild() == null)
+				: getRightChild().equals(onode.getRightChild());
+		
+		return value && color && parent && left && right;
+	}
+	
 	private String getColorRepresentation(byte color){
 		if(color == RED) return "R";
 		if(color == BLACK) return "B";
 		throw new IllegalStateException("Unknown color !");
+	}
+
+	@Override
+	public int getHeight() {
+		height = max(getNodeHeight(getLeftChild()), getNodeHeight(getRightChild())) + 1;
+		return height;
+	}
+	
+	@Override
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	@Override
+	public void setLeftChild(IMutableRedBlackTreeNode leftChild) {
+		this.leftChild = leftChild;
+	}
+
+	@Override
+	public void setRightChild(IMutableRedBlackTreeNode rightChild) {
+		this.rightChild = rightChild;
 	}
 
 }

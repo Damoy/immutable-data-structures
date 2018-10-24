@@ -1,7 +1,7 @@
 package com.dzoum.ids.app;
 
-import com.dzoum.ids.core.mutable.avl.IMutableAVLBuilder;
-import com.dzoum.ids.core.mutable.avl.MutableAVLBuilder;
+import com.dzoum.ids.core.avl.mutable.IMutableAVLBuilder;
+import com.dzoum.ids.core.avl.mutable.MutableAVLBuilder;
 import com.dzoum.ids.utils.Utils;
 
 public class AppMutableAVL {

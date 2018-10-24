@@ -1,4 +1,4 @@
-package com.dzoum.ids.core.mutable.avl;
+package com.dzoum.ids.core.avl.mutable;
 
 /**
  * A mutable AVL.

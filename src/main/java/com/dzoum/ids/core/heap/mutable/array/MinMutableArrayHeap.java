@@ -1,4 +1,5 @@
-package com.dzoum.ids.core.mutable.heap;
+package com.dzoum.ids.core.heap.mutable.array;
+
 
 import com.dzoum.ids.model.Data;
 import com.dzoum.ids.model.IData;
@@ -7,24 +8,23 @@ import com.dzoum.ids.utils.Utils;
 /**
  * Min mutable classic heap.
  */
-public class MinMutableHeap implements IMutableHeap {
+public class MinMutableArrayHeap implements IMutableArrayHeap {
 	
 	private IData data;
 
-	public MinMutableHeap(int capacity) {
+	public MinMutableArrayHeap(int capacity) {
 		// one more that contain size
 		this.data = Data.of(capacity + 1);
 		// data.get(0) is the current size
 		this.data.set(0, 0);
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean insert(int elt) {
 		if(data.get(0) + 1 == data.getSize()) {
-			Utils.println("Could not insert element into heap.");
 			return false;
 		}
 		
@@ -33,12 +33,12 @@ public class MinMutableHeap implements IMutableHeap {
 		// increase element
 		data.set(data.get(0), elt);
 		// heapify up
-		heapifyUp(data.get(0));
+		percolateUp(data.get(0));
 		
 		return true;
 	}
 
-	private void heapifyUp(int index) {
+	private void percolateUp(int index) {
 		// find the parent index
 		int iparent = index >> 1;
 
@@ -53,7 +53,7 @@ public class MinMutableHeap implements IMutableHeap {
 		data.set(index, parentVal);
 
 		// do the same with the new parent
-		heapifyUp(iparent);
+		percolateUp(iparent);
 	}
 
 	/**
@@ -75,12 +75,12 @@ public class MinMutableHeap implements IMutableHeap {
 		data.set(1, lastVal);
 		
 		// heapify down
-		heapifyDown(1);
+		percolateDown(1);
 		
 		return minVal;
 	}
 
-	private void heapifyDown(int index) {
+	private void percolateDown(int index) {
 		// check if leaf, if that's the case do nothing
 		// checks that parent is greater than current size
 		if ((index << 1) > data.get(0))
@@ -108,7 +108,23 @@ public class MinMutableHeap implements IMutableHeap {
 		data.set(index, childVal);
 		
 		// recursive algorithm
-		heapifyDown(iminChild);
+		percolateDown(iminChild);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isValid() {
+		for (int i = 1; i < (getCurrentSize() - 1) >> 1; ++i) {
+			if (data.get((i << 1) + 1) < data.get(i))
+				return false;
+
+			if (((i << 1) + 2) >= getCurrentSize() && data.get((i << 1) + 2) < data.get(i))
+				return false;
+		}
+		
+		return true;
 	}
 
 	/**
@@ -164,6 +180,26 @@ public class MinMutableHeap implements IMutableHeap {
 		
 		return sb.toString();
 	}
+	
+//	/**
+//	 * {@inheritDoc}
+//	 * @return
+//	 */
+//	@Override
+//    public String toPreOrderString() { 
+//        StringBuilder sb = new StringBuilder();
+//        sb.append("[");
+//        toPreOrderString(sb, 0);
+//        sb.append("]");
+//        return sb.toString(); 
+//    }
+//	
+//	private void toPreOrderString(StringBuilder sb, int index) {
+//		if(index >= data.getSize()) return;
+//		sb.append(data.get(index));
+//		toPreOrderString(sb, (index << 1) + 1);
+//		toPreOrderString(sb, (index << 1) + 2);
+//	}
 
 	/**
 	 * {@inheritDoc}

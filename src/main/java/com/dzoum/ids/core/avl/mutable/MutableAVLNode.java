@@ -1,4 +1,4 @@
-package com.dzoum.ids.core.mutable.avl;
+package com.dzoum.ids.core.avl.mutable;
 
 /**
  * {@link IMutableAVLNode}
@@ -21,22 +21,6 @@ public class MutableAVLNode implements IMutableAVLNode {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getValue() {
-		return value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public IMutableAVLNode getLeftChild() {
 		return leftChild;
 	}
@@ -49,22 +33,6 @@ public class MutableAVLNode implements IMutableAVLNode {
 		return rightChild;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setValue(int value) {
-		this.value = value;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setHeight(int height) {
-		this.height = height;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -84,18 +52,37 @@ public class MutableAVLNode implements IMutableAVLNode {
 	@Override
 	public boolean equals(Object o) {
 		if(o == null) return false;
-		if(!(o instanceof IMutableAVLNode)) return false;
+		if(!(o instanceof MutableAVLNode)) return false;
 		
-		IMutableAVLNode onode = (IMutableAVLNode) o;
+		MutableAVLNode onode = (MutableAVLNode) o;
 		
 		boolean value = getValue() == onode.getValue();
-		boolean left = getLeftChild() == null ? (onode.getRightChild() == null)
-				: getLeftChild().equals(onode.getRightChild());
+		boolean left = getLeftChild() == null ? (onode.getLeftChild() == null)
+				: getLeftChild().equals(onode.getLeftChild());
 		boolean right = getRightChild() == null ? (onode.getRightChild() == null)
 				: getRightChild().equals(onode.getRightChild());
 		
 		return value && left && right;
 	}
-	
+
+	@Override
+	public int getValue() {
+		return value;
+	}
+
+	@Override
+	public int getHeight() {
+		return height;
+	}
+
+	@Override
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	@Override
+	public void setHeight(int height) {
+		this.height = height;
+	}
 	
 }

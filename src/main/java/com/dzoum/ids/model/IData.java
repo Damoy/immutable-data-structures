@@ -44,4 +44,9 @@ public interface IData {
 	 */
 	public int[] get();
 	
+	/**
+	 * Shuffle the content.
+	 */
+	public IData shuffle();
+	
 }

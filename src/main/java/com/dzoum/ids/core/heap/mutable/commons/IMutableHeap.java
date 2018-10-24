@@ -1,4 +1,4 @@
-package com.dzoum.ids.core.mutable.heap;
+package com.dzoum.ids.core.heap.mutable.commons;
 
 /**
  * The mutable heaps interface.
@@ -50,5 +50,15 @@ public interface IMutableHeap {
 	 * Gets the heap current representation. 
 	 */
 	public String toString();
+	
+	/**
+	 * Is this heap valid ?
+	 */
+	public boolean isValid();
+	
+//	/**
+//	 * Pre-order representation.
+//	 */
+//	public String toPreOrderString(); 
 	
 }

@@ -1,7 +1,7 @@
 package com.dzoum.ids.app;
 
-import com.dzoum.ids.core.mutable.heap.IMutableHeap;
-import com.dzoum.ids.core.mutable.heap.MinMutableHeap;
+import com.dzoum.ids.core.heap.mutable.array.MinMutableArrayHeap;
+import com.dzoum.ids.core.heap.mutable.commons.IMutableHeap;
 import com.dzoum.ids.utils.Utils;
 
 public class AppMinMutableHeap {
@@ -13,7 +13,7 @@ public class AppMinMutableHeap {
 	}
 	
 	private static void trialSimple() {
-		IMutableHeap heap = new MinMutableHeap(10);
+		IMutableHeap heap = new MinMutableArrayHeap(10);
 		
 		Utils.println("Inserting...");
 		heap.insert(5);
@@ -39,7 +39,7 @@ public class AppMinMutableHeap {
 		int insertionTimes = Utils.irand(capacity >> 1, capacity);
 		Utils.println("Insertion times: " + insertionTimes);
 		
-		IMutableHeap mh = new MinMutableHeap(capacity);
+		IMutableHeap mh = new MinMutableArrayHeap(capacity);
 		int maxValue = 50;
 		int removeTimes = Utils.irand(1, insertionTimes >> 1);
 		Utils.println("Remove times: " + removeTimes);

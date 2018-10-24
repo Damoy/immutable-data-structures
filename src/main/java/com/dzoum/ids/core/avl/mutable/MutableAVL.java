@@ -1,11 +1,11 @@
-package com.dzoum.ids.core.mutable.avl;
+package com.dzoum.ids.core.avl.mutable;
+
+import static com.dzoum.ids.utils.Utils.*;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
 import com.dzoum.ids.utils.Utils;
-
-import static com.dzoum.ids.core.mutable.avl.AVLUtils.*;
 
 /**
  * {@link IMutableAVL}
@@ -34,7 +34,7 @@ public class MutableAVL implements IMutableAVL {
 			return node; // Duplicate values not allowed
 
 		// Update height of this ancestor node
-		node.setHeight(1 + max(height(node.getLeftChild()), height(node.getRightChild())));
+		node.setHeight(1 + max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())));
 
 		int balance = getBalance(node);
 
@@ -66,7 +66,7 @@ public class MutableAVL implements IMutableAVL {
 		if (node == null)
 			return 0;
 
-		return height(node.getLeftChild()) - height(node.getRightChild());
+		return getNodeHeight(node.getLeftChild()) - getNodeHeight(node.getRightChild());
 	}
 
 	private IMutableAVLNode rightRotate(IMutableAVLNode node) {
@@ -78,8 +78,8 @@ public class MutableAVL implements IMutableAVL {
 		node.setLeftChild(lRightChild);
 
 		// Update heights
-		node.setHeight(max(height(node.getLeftChild()), height(node.getRightChild())) + 1);
-		left.setHeight(max(height(left.getLeftChild()), height(left.getRightChild())) + 1);
+		node.setHeight(max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())) + 1);
+		left.setHeight(max(getNodeHeight(left.getLeftChild()), getNodeHeight(left.getRightChild())) + 1);
 
 		// Return new root
 		return left;
@@ -94,15 +94,11 @@ public class MutableAVL implements IMutableAVL {
 		node.setRightChild(rightLeftChild);
 
 		// Update heights
-		node.setHeight(max(height(node.getLeftChild()), height(node.getRightChild())) + 1);
-		right.setHeight(max(height(right.getLeftChild()), height(right.getRightChild())) + 1);
+		node.setHeight(max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())) + 1);
+		right.setHeight(max(getNodeHeight(right.getLeftChild()), getNodeHeight(right.getRightChild())) + 1);
 
 		// Return new root
 		return right;
-	}
-
-	private int max(int n1, int n2) {
-		return n1 > n2 ? n1 : n2;
 	}
 
 	/**
@@ -165,7 +161,7 @@ public class MutableAVL implements IMutableAVL {
 			return node;
 
 		// update height of the current node
-		node.setHeight(max(height(node.getLeftChild()), height(node.getRightChild())) + 1);
+		node.setHeight(max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())) + 1);
 
 		// get the balance factor of this node (to check whether
 		// this node became unbalanced)
