@@ -16,6 +16,7 @@ import com.dzoum.ids.core.commons.INode;
 import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTree;
 import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTreeNode;
 import com.dzoum.ids.core.redblacktree.mutable.MutableRedBlackTreeNode;
+import com.dzoum.ids.core.redblacktree.mutable.RedBlackTreeException;
 
 public final class Utils {
 
@@ -75,42 +76,60 @@ public final class Utils {
 		return mrbt.getMinValue(mrbt.getRoot());
 	}
 
-	public static boolean isValidMRBT(IMutableRedBlackTree mrbt, int min, int max) {
-		return isValidMRBTNode(mrbt.getRoot(), min, max, MutableRedBlackTreeNode.BLACK) && isMRBTBalanced(mrbt);
+	public static boolean isValidMRBT(IMutableRedBlackTree mrbt) throws RedBlackTreeException {
+		boolean rootIsBlack = mrbt.getRoot().isBlack();
+		if(!rootIsBlack) return false;
+		
+		int left = getBlackPathsCount(mrbt.getRoot().getLeftChild());
+		int right = getBlackPathsCount(mrbt.getRoot().getRightChild());
+		return left == right;
 	}
-
-	private static boolean isValidMRBTNode(IMutableRedBlackTreeNode node, int min, int max, byte expectedColor) {
-		if (node == null)
-			return true;
-
-		if (node.getValue() < min || node.getValue() > max || node.getColor() != expectedColor) {
-			println(node.getValue());
-			println(min);
-			println(max);
-			println(node.getColor());
-			println("father: " + node.getParent().getColor());
-			println(expectedColor);
-			return false;
+	
+	private static int getBlackPathsCount(IMutableRedBlackTreeNode node) throws RedBlackTreeException {
+		if(node == null) return 0;
+		
+		// check red red breach
+		if(node.getParent() != null && node.getParent().isRed() && node.isRed()) {
+			throw new RedBlackTreeException("Red Red breach !");
 		}
-
-		byte nextLayerColor = expectedColor == MutableRedBlackTreeNode.BLACK ? MutableRedBlackTreeNode.RED
-				: MutableRedBlackTreeNode.BLACK;
-
-		return (isValidMRBTNode(node.getLeftChild(), min, node.getValue() - 1, nextLayerColor)
-				&& isValidMRBTNode(node.getRightChild(), node.getValue() + 1, max, nextLayerColor));
+		
+		if(node.getParent() != null) {
+			if(node.isLeftChild()) {
+				if(node.getValue() > node.getParent().getValue())
+					throw new RedBlackTreeException("Left child superior to parent !");
+			} else {
+				if(node.getValue() < node.getParent().getValue())
+					throw new RedBlackTreeException("Right child inferior to parent !");
+			}
+		}
+		
+		int currentBlackCount = node.isBlack() ? 1 : 0;
+		return currentBlackCount + getBlackPathsCount(node.getLeftChild())
+			+ getBlackPathsCount(node.getRightChild());
 	}
+		
+// 		boolean leftChildNull = node.getLeftChild() == null;
+// 		boolean rightChildNull = node.getLeftChild() == null;
+//		if(leftChildNull) {
+//			if(rightChildNull) {
+//				return expectedColor == MutableRedBlackTreeNode.BLACK ? 1 : 0;
+//			} else {
+//				int currentBlackCount = expectedColor == MutableRedBlackTreeNode.BLACK ? 1 : 0;
+//				return currentBlackCount + getBlackPathsCount(node.getLeftChild(), nextLayerColor)
+//					+ getBlackPathsCount(node.getRightChild(), nextLayerColor);
+//			}
 
-	public static boolean isMRBTBalanced(IMutableRedBlackTree mrbt) {
-		return isMRBTNodeBalanced(mrbt.getRoot());
-	}
-
-	public static boolean isMRBTNodeBalanced(IMutableRedBlackTreeNode node) {
-		if (node == null)
-			return true;
-
-		return (Math.abs(getNodeHeight(node.getLeftChild()) - getNodeHeight(node.getRightChild())) <= 1
-				&& isMRBTNodeBalanced(node.getLeftChild()) && isMRBTNodeBalanced(node.getRightChild()));
-	}
+//	public static boolean isMRBTBalanced(IMutableRedBlackTree mrbt) {
+//		return isMRBTNodeBalanced(mrbt.getRoot());
+//	}
+//
+//	public static boolean isMRBTNodeBalanced(IMutableRedBlackTreeNode node) {
+//		if (node == null)
+//			return true;
+//
+//		return (Math.abs(getNodeHeight(node.getLeftChild()) - getNodeHeight(node.getRightChild())) <= 1
+//				&& isMRBTNodeBalanced(node.getLeftChild()) && isMRBTNodeBalanced(node.getRightChild()));
+//	}
 
 	public static int max(int n1, int n2) {
 		return n1 > n2 ? n1 : n2;

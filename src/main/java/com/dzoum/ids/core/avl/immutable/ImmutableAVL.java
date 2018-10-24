@@ -21,9 +21,27 @@ public class ImmutableAVL implements IImmutableAVL {
 	}
 	
 	public ImmutableAVL(int element, IImmutableAVL left, IImmutableAVL right) {
-		this(element, left, right,
-				Math.max(left.getHeight(), right.getHeight()) + 1,
-				left.getSize() + right.getSize() + 1);
+		this.element = element;
+		this.left = left;
+		this.right = right;
+		
+		if(left == null) {
+			if(right == null) {
+				this.height = 1;
+				this.size = 1;
+			} else {
+				this.height = right.getHeight() + 1;
+				this.size = right.getSize() + 1;
+			}
+		} else {
+			if(right == null) {
+				this.height = left.getHeight() + 1;
+				this.size = left.getSize() + 1;
+			} else {
+				this.height = Math.max(left.getHeight(), right.getHeight()) + 1;
+				this.size = left.getSize() + right.getSize() + 1;
+			}
+		}
 	}
 	
 	public ImmutableAVL(int element) {
@@ -49,14 +67,23 @@ public class ImmutableAVL implements IImmutableAVL {
 	public IImmutableAVL add(int element) {
 		int c = compareInts(element, this.element);
 		if (c < 0) {
-			IImmutableAVL left = this.left.add(element);
-			if (left != this.left) {
-				return balanceLeft(this.element, left, this.right);
+			if(this.left == null) {
+				return balanceLeft(this.element, new ImmutableAVL(element), this.right);
+			} else {
+				IImmutableAVL left = this.left.add(element);
+				if (left != this.left) {
+					return balanceLeft(this.element, left, this.right);
+				}
 			}
 		} else if (c > 0) {
-			IImmutableAVL right = this.right.add(element);
-			if (right != this.right) {
-				return balanceRight(this.element, this.left, right);
+			if(this.right == null) {
+				return new ImmutableAVL(this.element,
+						this.left, new ImmutableAVL(element));
+			} else {
+				IImmutableAVL right = this.right.add(element);
+				if (right != this.right) {
+					return balanceRight(this.element, this.left, right);
+				}
 			}
 		}
 		return this;
@@ -159,8 +186,17 @@ public class ImmutableAVL implements IImmutableAVL {
 	 */
 	@Override
 	public String toString() {
-		return this.left.toString() + "," + this.element + "\n"
-			+ this.right.toString();
+		StringBuilder sb = new StringBuilder();
+		toString(sb, this);
+		return sb.toString();
 	}
-
+	
+	private void toString(StringBuilder sb, IImmutableAVL iavl) {
+		if(iavl == null) return;
+		sb.append(iavl.getElement());
+		sb.append(",");
+		toString(sb, iavl.getLeftChild());
+		toString(sb, iavl.getRightChild());
+	}
+	
 }

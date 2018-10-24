@@ -19,16 +19,16 @@ public class TestMutableReadBlackTree {
 	private IMutableRedBlackTree mrbt;
 	
 	@Test
-	public void testEmpty() {
+	public void testEmpty() throws RedBlackTreeException {
 		mrbt = new MutableRedBlackTree(5);
 		assertEquals(getMRBTMinNode(mrbt), new MutableRedBlackTreeNode(5, MutableRedBlackTreeNode.BLACK));
 		assertEquals(getMRBTMinNode(mrbt), mrbt.getRoot());
 		assertEquals(getMRBTMinNodeValue(mrbt), 5);
-		assertTrue(isValidMRBT(mrbt, 0, 5));
+		assertTrue(isValidMRBT(mrbt));
 	}
 	
 	@Test
-	public void testInsertions() {
+	public void testInsertions() throws RedBlackTreeException {
 		int nb = 50;
 		
 		for(int count = 0; count < nb; ++count) {
@@ -39,7 +39,8 @@ public class TestMutableReadBlackTree {
 			mrbt = new MutableRedBlackTree(max >> 1);
 			
 			for(int i = 0; i < insertionsTimes; ++i) {
-				assertTrue(isValidMRBT(mrbt, min, max));
+				mrbt.printWidthOrder();
+				assertTrue(isValidMRBT(mrbt));
 				mrbt.insert(irand(min, max));
 			}
 		}

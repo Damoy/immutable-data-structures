@@ -13,7 +13,12 @@ public class TestImmutableAVL {
 
 	@Test
 	public void testInsertion() {
-		ImmutableAVL root = new ImmutableAVL(5);
-		System.out.println(root.add(56));
+		IImmutableAVL left = new ImmutableAVL(6);
+		IImmutableAVL right = new ImmutableAVL(56);
+		IImmutableAVL root = new ImmutableAVL(5, left, right);
+		root = root.add(43);
+		System.out.println(root.toString());
+		System.out.println(left.toString());
+		System.out.println(right.toString());
 	}
 }

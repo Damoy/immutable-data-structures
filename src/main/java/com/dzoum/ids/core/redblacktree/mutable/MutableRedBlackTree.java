@@ -51,16 +51,17 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 		
 		while(tmp != null){
 			if(nodeValue < tmp.getValue()){
-				if(tmp.getLeftChild() == null) break;
-				else tmp = tmp.getLeftChild();
+				if(tmp.getLeftChild() == null)
+					break;
+				else
+					tmp = tmp.getLeftChild();
 			} else if(nodeValue == tmp.getValue()){
 				break;
 			} else {
-				if(tmp.getRightChild() == null){
+				if(tmp.getRightChild() == null)
 					break;
-				} else {
+				else 
 					tmp = tmp.getRightChild();
-				}
 			}
 		}
 		
