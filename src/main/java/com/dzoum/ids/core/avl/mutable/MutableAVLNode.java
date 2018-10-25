@@ -57,12 +57,13 @@ public class MutableAVLNode implements IMutableAVLNode {
 		MutableAVLNode onode = (MutableAVLNode) o;
 		
 		boolean value = getValue() == onode.getValue();
+		boolean height = getHeight() == onode.getHeight();
 		boolean left = getLeftChild() == null ? (onode.getLeftChild() == null)
 				: getLeftChild().equals(onode.getLeftChild());
 		boolean right = getRightChild() == null ? (onode.getRightChild() == null)
 				: getRightChild().equals(onode.getRightChild());
 		
-		return value && left && right;
+		return value && height && left && right;
 	}
 
 	@Override
