@@ -1,6 +1,8 @@
 package com.dzoum.ids.core.heap.mutable.array;
 
 
+import com.dzoum.ids.app.bench.IBenchable;
+import com.dzoum.ids.core.avl.mutable.MutableAVLNode;
 import com.dzoum.ids.model.Data;
 import com.dzoum.ids.model.IData;
 import com.dzoum.ids.utils.Utils;
@@ -8,7 +10,7 @@ import com.dzoum.ids.utils.Utils;
 /**
  * Min mutable classic heap.
  */
-public class MinMutableArrayHeap implements IMutableArrayHeap {
+public class MinMutableArrayHeap implements IMutableArrayHeap, IBenchable {
 	
 	private IData data;
 
@@ -32,7 +34,7 @@ public class MinMutableArrayHeap implements IMutableArrayHeap {
 		data.set(0, data.get(0) + 1);
 		// increase element
 		data.set(data.get(0), elt);
-		// heapify up
+		// percolate up
 		percolateUp(data.get(0));
 		
 		return true;
@@ -74,7 +76,7 @@ public class MinMutableArrayHeap implements IMutableArrayHeap {
 		// update min value
 		data.set(1, lastVal);
 		
-		// heapify down
+		// percolate down
 		percolateDown(1);
 		
 		return minVal;
@@ -207,5 +209,84 @@ public class MinMutableArrayHeap implements IMutableArrayHeap {
 	@Override
 	public void display() {
 		Utils.println(toString());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void benchCreate(IData dataset, int creationSize) {
+		data = Data.of(dataset.getSize() + 1);
+		data.set(0, dataset.getSize());
+		
+		for(int i = 1; i < creationSize; ++i)
+			data.set(i, dataset.get(i - 1));
+			
+		for (int i = creationSize >> 1; i >= 0; i--)
+			minHeapify(i + 1, creationSize);
+		
+		// Utils.println("heap ok: " + isValid());
+	}
+	
+	private void minHeapify(int index, int size) {
+		int left = (index << 1) + 1;
+		int right = (index << 1) + 2;
+		int smallest = -1;
+
+		// find the smallest key between current node and its children.
+		if (left <= size - 1 && data.get(left) < data.get(index)) {
+			smallest = left;
+		} else {
+			smallest = index;
+		}
+
+		if (right <= size - 1 && data.get(right) < data.get(smallest)) {
+			smallest = right;
+		}
+
+		// if the smallest key is not the current key then bubble-down it.
+		if (smallest != index) {
+			int tmp = data.get(index);
+			data.set(index, data.get(smallest));
+			data.set(index, tmp);
+			minHeapify(smallest, size);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void benchInsertMin(int times) {
+		for(int j = 0; j < times; ++j) {
+			insert(getMin() - 1);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void benchRemoveMin(int times) {
+		for(int j = 0; j < times; ++j) {
+			remove();
+		}
+	}
+
+	@Override
+	public void benchInsertions(int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchRemovals(int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setupForBench(IData dataset, int creationSize) {
+		benchCreate(dataset, creationSize);
 	}
 }

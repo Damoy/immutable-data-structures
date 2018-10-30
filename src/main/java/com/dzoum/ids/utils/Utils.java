@@ -6,9 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 import com.dzoum.ids.core.avl.mutable.IMutableAVL;
 import com.dzoum.ids.core.avl.mutable.IMutableAVLNode;
@@ -23,7 +24,6 @@ import com.dzoum.ids.core.redblacktree.mutable.RedBlackTreeException;
 public final class Utils {
 
 	private static Random SEED = new Random();
-	private final static Map<String, Integer> MEMORY = new HashMap<>();
 
 	private Utils() {
 	}
@@ -52,7 +52,9 @@ public final class Utils {
 	}
 
 	public static boolean isMutableAVL(IMutableAVL mavl, int minValue, int maxValue) {
-		return isMutableAVLUtil(mavl.getRoot(), minValue, maxValue) && isMutableAVLBalanced(mavl);
+		boolean avlok = isMutableAVLUtil(mavl.getRoot(), minValue, maxValue);
+		boolean balanced = isMutableAVLBalanced(mavl);
+		return avlok && balanced;
 	}
 
 	private static boolean isMutableAVLUtil(IMutableAVLNode node, int min, int max) {
@@ -86,24 +88,43 @@ public final class Utils {
 		return mrbt.getMinValue(mrbt.getRoot());
 	}
 
-	public static boolean isRedBlackTree(IMutableRedBlackTree mrbt) throws RedBlackTreeException {
-		boolean rootIsBlack = mrbt.getRoot().isBlack();
-		if(!rootIsBlack) return false;
+	public static boolean isRedBlackTree(IMutableRedBlackTree tree) throws RedBlackTreeException {
+		if(tree.getRoot() == null) return true;
+		Set<Integer> check = new HashSet<>();
+		countBlack(check, tree.getRoot(), null);
+		boolean b = check.size() == 1;
 		
-		int left = getBlackPathsCount(mrbt.getRoot().getLeftChild());
-		int right = getBlackPathsCount(mrbt.getRoot().getRightChild());
-		return left == right;
-	}
-	
-	private static int getBlackPathsCount(IMutableRedBlackTreeNode node) throws RedBlackTreeException {
-		if(node == null) return 0;
-		
-		// check red red breach
-		if(node.getParent() != null && node.getParent().isRed() && node.isRed()) {
-			throw new RedBlackTreeException("Red Red breach !");
+		if(!b) {
+			Iterator<Integer> it = check.iterator();
+			Utils.print("Set: ");
+			while(it.hasNext()) {
+				Utils.print(it.next() + " ");
+			}
+			Utils.println("");
 		}
 		
+		return b;
+	}
+	
+	private static void countBlack(Set<Integer> set, IMutableRedBlackTreeNode node, IMutableRedBlackTreeNode parent) throws RedBlackTreeException {
+		if(node == null) {
+			if(parent == null) {
+				set.add(0);
+			} else {
+				set.add(parent.getBlackCount());
+			}
+			return;
+		}
+		
+		if(node.getParent() != null && node.getParent().isRed() && node.isRed()) {
+			throw new RedBlackTreeException("Red red breach !");
+		}
+		
+		int newBlackCount = 0;
+		
 		if(node.getParent() != null) {
+			newBlackCount = node.getParent().getBlackCount();
+			
 			if(node.isLeftChild()) {
 				if(node.getValue() > node.getParent().getValue())
 					throw new RedBlackTreeException("Left child superior to parent !");
@@ -113,11 +134,16 @@ public final class Utils {
 			}
 		}
 		
-		int currentBlackCount = node.isBlack() ? 1 : 0;
-		return currentBlackCount + getBlackPathsCount(node.getLeftChild())
-								+ getBlackPathsCount(node.getRightChild());
-	}
+		if(node.isBlack()) {
+			++newBlackCount;
+		} 
 		
+		node.setBlackCount(newBlackCount);
+		
+		countBlack(set, node.getLeftChild(), node);
+		countBlack(set, node.getRightChild(), node);
+	}
+	
 	// Function to check binary tree is a Heap or Not.
 	public boolean isHeap(IMutableNodeHeap heap) {
 		if (heap.getRoot() == null)
@@ -241,21 +267,13 @@ public final class Utils {
 	 * @param content
 	 *            the text to write
 	 */
-	public static void writeToFile(String title, String content) {
+	public static void writeToFile(String title, String extension, String content) {
 		title = filterTitle(title);
-		String ftitle = getOutputFilePath();
-
-		if (MEMORY.containsKey(title)) {
-			int lastId = MEMORY.get(title);
-			ftitle += title + (++lastId);
-			MEMORY.put(ftitle, lastId);
-		} else {
-			MEMORY.put(title, 0);
-			ftitle += title;
-		}
-
+		title = "./res/bench/" + title;
+		File file = new File(title);
+		
 		try {
-			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(ftitle)));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 			bw.write(content);
 			bw.close();
 		} catch (IOException e) {
@@ -271,10 +289,6 @@ public final class Utils {
 		return title.replaceAll("[ *$^!;:,=)('\"&]", "_");
 	}
 
-	private static String getOutputFilePath() {
-		return "./src/main/resources/output/";
-	}
-	
 	public static final class Pair<A, B> {
 		public final A first;
 		public final B second;

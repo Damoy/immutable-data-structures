@@ -3,15 +3,21 @@ package com.dzoum.ids.core.redblacktree.mutable;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.dzoum.ids.app.bench.IBenchable;
+import com.dzoum.ids.model.IData;
 import com.dzoum.ids.utils.Utils;
 
-public class MutableRedBlackTree implements IMutableRedBlackTree {
+public class MutableRedBlackTree implements IMutableRedBlackTree, IBenchable {
 
 	private IMutableRedBlackTreeNode root;
 	
 	public MutableRedBlackTree(int rootValue) {
 		// root is always black
 		root = new MutableRedBlackTreeNode(rootValue, MutableRedBlackTreeNode.BLACK);
+	}
+	
+	public MutableRedBlackTree() {
+		root = null;
 	}
 
 	@Override
@@ -23,7 +29,7 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 			newNode.setColor(MutableRedBlackTreeNode.BLACK);
 			root = newNode;
 		} else {
-			IMutableRedBlackTreeNode searchNode = lookFor(value);
+			IMutableRedBlackTreeNode searchNode = search(value);
 			
 			// if the value already exists, stop
 			if(searchNode.getValue() == value)
@@ -44,9 +50,8 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 		}
 	}
 	
-	// look for the node with value inquired one
-	// if does not exist, return last tree node while traversing
-	private IMutableRedBlackTreeNode lookFor(int nodeValue){
+	@Override
+	public IMutableRedBlackTreeNode search(int nodeValue){
 		IMutableRedBlackTreeNode tmp = root;
 		
 		while(tmp != null){
@@ -68,6 +73,7 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 		return tmp;
 	}
 	
+	// Fix the double red violation
 	private void checkRedBreach(IMutableRedBlackTreeNode node){
 		// if node is the root, set color to black and return
 		if(node == root){
@@ -117,8 +123,182 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 
 	@Override
 	public IMutableRedBlackTreeNode remove() {
-		// TODO Auto-generated method stub
-		return null;
+		IMutableRedBlackTreeNode root = getRoot();
+		remove(getRoot());
+		return root;
+	}
+	
+	@Override
+	public void remove(IMutableRedBlackTreeNode node) {
+		if(node == null) return;
+		IMutableRedBlackTreeNode x = replace(node);
+		
+		// Are both node and x nodes black ?
+		boolean nodesBlack = (x == null || x.isBlack()) && node.isBlack();
+		IMutableRedBlackTreeNode parent = node.getParent();
+		
+		if(x == null) {
+			// x is null so node is leaf
+			if(node == root) {
+				// node is root, set root to null
+				root = null;
+			} else {
+				if(nodesBlack) {
+					// if both nodes are black
+					// node is leaf, check black breach on node
+					checkBlackBreach(node);
+				} else {
+					if(node.getBrother() != null) {
+						// brother is not null, set its color to red
+						node.getBrother().setColor(MutableRedBlackTreeNode.RED);
+					}
+				}
+					
+				// delete node from red black tree
+				if(node.isLeftChild()) {
+					parent.setLeftChild(null);
+				} else {
+					parent.setRightChild(null);
+				}
+			}
+			
+			return;
+		}
+			
+		if(node.getLeftChild() ==  null || node.getRightChild() == null) {
+			// node has one child
+			if(node == root) {
+				// node is root, assign value of x to node and delete x
+				node.setValue(x.getValue());
+				node.setLeftChild(null);
+				node.setRightChild(null);
+			} else {
+				// detach node from the tree and move x up
+				if(node.isLeftChild()) {
+					parent.setLeftChild(x);
+				} else {
+					parent.setRightChild(x);
+				}
+				
+				x.setParent(parent);
+				
+				if(nodesBlack) {
+					checkBlackBreach(x);
+				} else {
+					x.setColor(MutableRedBlackTreeNode.BLACK);
+				}
+			}
+			
+			return;
+		}
+		
+		// node has 2 children, swap values with successor and recurse
+		x.swapValue(node);
+		remove(x);
+	}
+	
+	// Fix the double black violation
+	private void checkBlackBreach(IMutableRedBlackTreeNode node) {
+		if(node == root) return;
+		
+		IMutableRedBlackTreeNode brother = node.getBrother();
+		IMutableRedBlackTreeNode parent = node.getParent();
+		
+		if(brother == null) {
+			checkBlackBreach(parent);
+		} else {
+			// brother red
+			if(brother.isRed()) {
+				// update colors
+				parent.setColor(MutableRedBlackTreeNode.RED);
+				brother.setColor(MutableRedBlackTreeNode.BLACK);
+				
+				if(brother.isLeftChild()) {
+					// left case
+					rightRotate(parent);
+				} else {
+					// right case
+					leftRotate(parent);
+				}
+				
+				checkBlackBreach(node);
+			} else {
+				// brother black
+				if(brother.hasRedChild()) {
+					// at least one red child
+					if(brother.getLeftChild() != null && brother.getLeftChild().isRed()) {
+						if(brother.isLeftChild()) {
+							// left left case
+							brother.getLeftChild().setColor(brother.getColor());
+							brother.setColor(parent.getColor());
+							rightRotate(parent);
+						} else {
+							// right left
+							brother.getLeftChild().setColor(parent.getColor());
+							rightRotate(brother);
+							leftRotate(parent);
+						}
+					} else {
+						if(brother.isLeftChild()) {
+							// left right
+							brother.getRightChild().setColor(parent.getColor());
+							leftRotate(brother);
+							rightRotate(parent);
+						} else {
+							// right right
+							brother.getRightChild().setColor(brother.getColor());
+							brother.setColor(parent.getColor());
+							leftRotate(parent);
+						}
+					}
+					
+					parent.setColor(MutableRedBlackTreeNode.BLACK);
+				} else {
+					// 2 black children
+					brother.setColor(MutableRedBlackTreeNode.RED);
+					if(parent.isBlack()) {
+						checkBlackBreach(parent);
+					} else {
+						parent.setColor(MutableRedBlackTreeNode.BLACK);
+					}
+				}
+			}
+		}
+	}
+	
+	
+	private IMutableRedBlackTreeNode replace(IMutableRedBlackTreeNode node) { 
+		// when node have 2 children 
+		if (node.getLeftChild() != null && node.getRightChild() != null) {
+			return findNodeSuccessor(node.getRightChild()); 
+		}
+
+		// leaf
+		if(node.getLeftChild() == null && node.getRightChild() == null)
+			return null;
+
+		// one child
+		if(node.getLeftChild() != null) {
+			return node.getLeftChild();
+		} else {
+			return node.getRightChild();
+		}
+	}
+
+	@Override
+	public IMutableRedBlackTreeNode removeGivenValue(int value) {
+		if(root == null) return null;
+		
+		IMutableRedBlackTreeNode node = search(value);
+		
+		if(node.getValue() != value) {
+			Utils.println("There is no node which value is " + value + " in this red black tree.");
+			return null;
+		}
+		
+		IMutableRedBlackTreeNode ptr = node;
+		remove(node);
+		return ptr;
 	}
 
 	// left rotation given the node
@@ -218,8 +398,40 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 	}
 
 	@Override
-	public void printWidthOrder() {
+	public void printColoredWidthOrder() {
 		Utils.println(toStringWidthOrder());
+	}
+	
+	@Override
+	public void printWidthOrder() {
+		StringBuilder sb = new StringBuilder();
+		if(root == null) {
+			sb.append("Red black tree is empty.\n");
+		} else {
+			printWidthOrder(sb, root);
+			sb.append("\n");
+		}
+		
+		Utils.print(sb.toString());
+	}
+	
+	private void printWidthOrder(StringBuilder sb, IMutableRedBlackTreeNode node) {
+		if(node == null) return;
+		Queue<IMutableRedBlackTreeNode> queue = new LinkedList<>();
+		IMutableRedBlackTreeNode current = null;
+		queue.add(node);
+		
+		while(!queue.isEmpty()) {
+			current = queue.poll();
+			if(current != null) {
+				Utils.print(current.getValue() + " ");
+				
+				if(current.getLeftChild() != null)
+					queue.add(current.getLeftChild());
+				if(current.getRightChild() != null)
+					queue.add(current.getRightChild());
+			}
+		}
 	}
 
 	@Override
@@ -261,4 +473,57 @@ public class MutableRedBlackTree implements IMutableRedBlackTree {
 		this.root = root;
 	}
 	
+	@Override
+	public void benchCreate(IData dataset, int creationSize) {
+		IData sorted = dataset.clone().sort();
+		root = create(sorted, 0, creationSize, MutableRedBlackTreeNode.BLACK);
+	}
+	
+	private IMutableRedBlackTreeNode create(IData dataset, int start, int end, byte color) {
+		if(start >= end) return null;
+		int mid = (end + start) >> 1;
+		IMutableRedBlackTreeNode node = new MutableRedBlackTreeNode(dataset.get(mid), color);
+		
+		color = (color == MutableRedBlackTreeNode.BLACK) ?
+				MutableRedBlackTreeNode.RED : MutableRedBlackTreeNode.BLACK;
+		
+		node.setLeftChild(create(dataset, start, mid - 1, color));
+		node.setRightChild(create(dataset, mid + 1, end, color));
+		return node;
+	}
+
+	@Override
+	public void benchInsertMin(int times) {
+		for(int i = 0; i < times; ++i) {
+			insert(getMinValue(root) - 1);
+		}
+	}
+
+	@Override
+	public void benchRemoveMin(int times) {
+		for(int i = 0; i < times; ++i) {
+			remove();
+		}
+	}
+
+	@Override
+	public void benchInsertions(int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchRemovals(int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setupForBench(IData dataset, int creationSize) {
+		root = new MutableRedBlackTreeNode(dataset.get(0), MutableRedBlackTreeNode.BLACK);
+		for(int i = 1; i < creationSize; ++i) {
+			insert(dataset.get(i));
+		}
+	}
+
 }

@@ -49,4 +49,9 @@ public interface IData {
 	 */
 	public IData shuffle();
 	
+	/**
+	 * Sort the content
+	 */
+	public IData sort();
+	
 }

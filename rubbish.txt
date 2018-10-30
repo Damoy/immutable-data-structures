@@ -1,0 +1,1584 @@
+//			Utils.println("Heap capacity increased.");
+//			content.increase(capacity << 1);
+//			capacity = capacity << 1;
+
+		if (content.get(i) < content.get((i << 1) + 1) || content.get(i) < content.get((i << 1) + 2)) {
+			int max = (content.get((i << 1) + 1) > (content.get((i << 1) + 2))) ? ((i << 1) + 1) : ((i << 1) + 2);
+			swap(i, max);
+			adjust(max);
+		}
+
+		package com.lama.ids.app;
+
+import com.lama.ids.core.mutable.IMutableHeap;
+import com.lama.ids.core.mutable.MaxMutableHeap;
+import com.lama.ids.core.mutable.MinMutableHeap;
+import com.lama.ids.utils.Utils;
+
+public class Application {
+
+	public static void main(String[] args) {
+		_trialMinMutableHeap();
+		
+//		for(int i = 0; i < 10000; ++i)
+//			trialMinMutableHeap();
+	}
+	
+	private static void trialMaxMutableHeap() {
+		int capacity = Utils.irand(5, 15);
+		Utils.println("Capacity: " + capacity);
+		
+		IMutableHeap mh = new MaxMutableHeap(capacity);
+		int maxValue = 50;
+		
+		for(int i = 0; i < capacity; ++i)
+			mh.insert(Utils.irand(1, maxValue));
+			
+		mh.display();
+		
+		mh.remove();
+		mh.remove();
+		
+		mh.display();
+	}
+	
+	private static void _trialMinMutableHeap() {
+		IMutableHeap heap = new MinMutableHeap(10);
+		
+		heap.insert(5);
+		heap.insert(2);
+		heap.insert(11);
+		heap.insert(13);
+		heap.insert(65);
+		heap.insert(1);
+		heap.insert(3);
+		
+		heap.display();
+		heap.remove();
+		heap.display();
+		heap.remove();
+		heap.display()
+	}
+	
+	private static void trialMinMutableHeap() {
+		int capacity = Utils.irand(5, 15);
+		Utils.println("Capacity: " + capacity);
+		
+		IMutableHeap mh = new MinMutableHeap(capacity);
+		int maxValue = 50;
+		
+		for(int i = 0; i < capacity; ++i)
+			mh.insert(Utils.irand(1, maxValue));
+			
+		mh.display();
+		
+		mh.remove();
+		mh.remove();
+		
+		mh.display();
+	}
+
+}
+
+
+	@Test
+	// TODO
+	public void testBuiltMutableAVL() {
+		long start = System.nanoTime();
+		StringBuilder sb = new StringBuilder();
+		
+		for(int i = 0; i < 100; ++i) {
+			sb.setLength(0);
+			int min = -Utils.irand((int) Math.pow(2, 8), (int) Math.pow(2, 16));
+			int max = Utils.irand((int) Math.pow(2, 8), (int) Math.pow(2, 16));
+			int size = Utils.irand((int) Math.pow(2, 8), (int) Math.pow(2, 20));
+			
+			mavl = builder.buildFrom(Generator.getInstance().randomGeneration(size, min, max));
+			
+			assertTrue(AVLUtils.isValidMutableAVL(mavl, min, max));
+
+			sb.append("testBuildMutableAVL | min:");
+			sb.append(min);
+			sb.append(", max:");
+			sb.append(max);
+			sb.append(", size:");
+			sb.append(size);
+			sb.append(" | took ");
+			sb.append((System.nanoTime() - start) / 1000000);
+			sb.append(" ms.");
+			
+			Utils.println(sb.toString());
+		}
+	}
+
+		@Test
+	public void testRepresentation() {
+		mmh = new MinMutableHeap(5);
+		assertEquals("[MMH|]", mmh.toString());
+		
+		mmh.insert(2);
+		mmh.insert(25);
+		mmh.insert(64);
+		
+		assertEquals("[MMH|2,25,64]", mmh.toString());
+		
+		mmh.insert(1);
+		mmh.insert(1000);
+		
+		assertEquals("[MMH|1,2,64,25,1000]", mmh.toString());
+		
+		mmh.insert(2452);
+		
+		assertEquals("[MMH|1,2,64,25,1000]", mmh.toString());
+		
+		mmh.remove();
+		
+		assertEquals("[MMH|2,25,64,1000]", mmh.toString());
+	}
+
+		/**
+	 * {@inheritDoc}
+	 * @return
+	 */
+	@Override
+    public String toPreOrderString() { 
+        Stack<Integer> s = new Stack<Integer>(); 
+        int root = Integer.MIN_VALUE;
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        
+        for (int i = 0; i < data.getSize(); i++) { 
+            while (!s.empty() && s.peek() < data.get(i)) { 
+                root = s.peek();
+                sb.append(root);
+                sb.append(", ");
+                s.pop(); 
+            }
+  
+            s.push(data.get(i)); 
+        }
+        
+        sb.setLength(sb.length() - 1);
+        sb.append("]");
+        
+        return sb.toString(); 
+    } 
+
+
+    // Utils - 24-10-2018 afternoon
+
+    package com.dzoum.ids.utils;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import com.dzoum.ids.core.avl.mutable.IMutableAVL;
+import com.dzoum.ids.core.avl.mutable.IMutableAVLNode;
+import com.dzoum.ids.core.commons.INode;
+import com.dzoum.ids.core.heap.mutable.array.IMutableArrayHeap;
+import com.dzoum.ids.core.heap.mutable.node.IHeapNode;
+import com.dzoum.ids.core.heap.mutable.node.IMutableNodeHeap;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTree;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTreeNode;
+import com.dzoum.ids.core.redblacktree.mutable.RedBlackTreeException;
+
+public final class Utils {
+
+	private static Random SEED = new Random();
+	private final static Map<String, Integer> MEMORY = new HashMap<>();
+
+	private Utils() {
+	}
+	
+	public static void randomize() {
+		SEED = new Random();
+	}
+	
+	public static void setRandomSeed(long seed) {
+		SEED = new Random(seed);
+	}
+
+	public static INode getMutableAVLMinNode(IMutableAVL mavl) {
+		return mavl.getMinNode(mavl.getRoot());
+	}
+
+	public static int getMutableAVLMinNodeValue(IMutableAVL mavl) {
+		return mavl.getMinValue(mavl.getRoot());
+	}
+
+	public static int getNodeHeight(INode node) {
+		if (node == null)
+			return 0;
+
+		return node.getHeight();
+	}
+
+	public static boolean isMutableAVL(IMutableAVL mavl, int minValue, int maxValue) {
+		return isMutableAVLUtil(mavl.getRoot(), minValue, maxValue) && isMutableAVLBalanced(mavl);
+	}
+
+	private static boolean isMutableAVLUtil(IMutableAVLNode node, int min, int max) {
+		if (node == null)
+			return true;
+
+		if (node.getValue() < min || node.getValue() > max)
+			return false;
+
+		return (isMutableAVLUtil(node.getLeftChild(), min, node.getValue() - 1)
+				&& isMutableAVLUtil(node.getRightChild(), node.getValue() + 1, max));
+	}
+
+	public static boolean isMutableAVLBalanced(IMutableAVL mavl) {
+		return isMutableAVLNodeBalanced(mavl.getRoot());
+	}
+
+	private static boolean isMutableAVLNodeBalanced(IMutableAVLNode node) {
+		if (node == null)
+			return true;
+
+		return (Math.abs(getNodeHeight(node.getLeftChild()) - getNodeHeight(node.getRightChild())) <= 1
+				&& isMutableAVLNodeBalanced(node.getLeftChild()) && isMutableAVLNodeBalanced(node.getRightChild()));
+	}
+
+	public static IMutableRedBlackTreeNode getMutableRedBlackTreeMinNode(IMutableRedBlackTree mrbt) {
+		return mrbt.getMinNode(mrbt.getRoot());
+	}
+
+	public static int getMutableRedBlackTreeMinNodeValue(IMutableRedBlackTree mrbt) {
+		return mrbt.getMinValue(mrbt.getRoot());
+	}
+
+	public static boolean isRedBlackTree(IMutableRedBlackTree mrbt) throws RedBlackTreeException {
+		boolean rootIsBlack = mrbt.getRoot().isBlack();
+		if(!rootIsBlack) return false;
+		
+		int left = getBlackPathsCount(mrbt.getRoot().getLeftChild());
+		int right = getBlackPathsCount(mrbt.getRoot().getRightChild());
+		return left == right;
+	}
+	
+	private static int getBlackPathsCount(IMutableRedBlackTreeNode node) throws RedBlackTreeException {
+		if(node == null) return 0;
+		
+		// check red red breach
+		if(node.getParent() != null && node.getParent().isRed() && node.isRed()) {
+			throw new RedBlackTreeException("Red Red breach !");
+		}
+		
+		if(node.getParent() != null) {
+			if(node.isLeftChild()) {
+				if(node.getValue() > node.getParent().getValue())
+					throw new RedBlackTreeException("Left child superior to parent !");
+			} else {
+				if(node.getValue() < node.getParent().getValue())
+					throw new RedBlackTreeException("Right child inferior to parent !");
+			}
+		}
+		
+		int currentBlackCount = node.isBlack() ? 1 : 0;
+		return currentBlackCount + getBlackPathsCount(node.getLeftChild())
+								+ getBlackPathsCount(node.getRightChild());
+	}
+		
+	// Function to check binary tree is a Heap or Not.
+	public boolean isHeap(IMutableNodeHeap heap) {
+		if (heap.getRoot() == null)
+			return true;
+
+		return isHeapComplete(heap.getRoot(), 0,countHeapNodes(heap.getRoot()))
+				&& isHeapUtil(heap.getRoot());
+	}
+	
+	public boolean isHeap(IMutableArrayHeap heap) {
+		if(heap.getCurrentSize() == 0 || heap.getCapacity() == 0)
+			return true;
+		
+		return isHeapComplete(heap, 1, countHeapNodes(heap, 1))
+				&& isHeapUtil(heap, 1);
+	}
+	
+	// This function checks if the binary tree is complete or not
+	private boolean isHeapComplete(IHeapNode root, int index, int nodesNb) {
+		// An empty tree is complete
+		if (root == null)
+			return true;
+
+		// If index assigned to current node is more than
+		// number of nodes in tree, then tree is not complete
+		if (index >= nodesNb)
+			return false;
+
+		// Recur for left and right subtrees
+		return isHeapComplete(root.getLeftChild(), (index << 1) + 1, nodesNb)
+				&& isHeapComplete(root.getRightChild(), (index << 1) + 2, nodesNb);
+	}
+	
+	private boolean isHeapComplete(IMutableArrayHeap heap, int index, int nodesNb) {
+		if(index >= heap.getCapacity())
+			return true;
+
+		if (index >= nodesNb)
+			return false;
+
+		return isHeapComplete(heap, (index << 1), nodesNb)
+				&& isHeapComplete(heap, (index << 1) + 1, nodesNb);
+	}
+	
+	// Checks the heap property in the tree.
+	private boolean isHeapUtil(IHeapNode root) {
+		// Base case : single node satisfies property
+		if (root.getLeftChild() == null && root.getRightChild() == null)
+			return true;
+
+		// node will be in second last level
+		if (root.getRightChild() == null) {
+			// check heap property at Node
+			// No recursive call , because no need to check last level
+			return root.getValue() >= root.getLeftChild().getValue();
+		} else {
+			// Check heap property at Node and
+			// Recursive check heap property at left and right subtree
+			if (root.getValue() >= root.getLeftChild().getValue() && root.getValue() >= root.getRightChild().getValue())
+				return isHeapUtil(root.getLeftChild()) && isHeapUtil(root.getRightChild());
+			else
+				return false;
+		}
+	}
+	
+	private boolean isHeapUtil(IMutableArrayHeap heap, int index) {
+		if (index << 1 >= heap.getCapacity() || ((index << 1) + 1) >= heap.getCapacity())
+			return true;
+
+		if (index << 1 >= heap.getCapacity()) {
+			return heap.getMin() >= root.getLeftChild().getValue();
+		} else {
+			if (root.getValue() >= root.getLeftChild().getValue() && root.getValue() >= root.getRightChild().getValue())
+				return isHeapUtil(root.getLeftChild()) && isHeapUtil(root.getRightChild());
+			else
+				return false;
+		}
+	}
+	
+	// Returns true if arr[i..n-1] represents a 
+	// max-heap 
+	bool isHeap(int arr[], int i, int n) 
+	{ 
+	   // If a leaf node 
+	   if (i > (n - 2)/2) 
+	       return true; 
+	  
+	   // If an internal node and is greater than its children, and 
+	   // same is recursively true for the children 
+	   if (arr[i] >= arr[2*i + 1]  &&  arr[i] >= arr[2*i + 2] && 
+	       isHeap(arr, 2*i + 1, n) && isHeap(arr, 2*i + 2, n)) 
+	       return true; 
+	  
+	   return false; 
+	} 
+	
+	private int countHeapNodes(IHeapNode root) {
+		if (root == null)
+			return 0;
+		
+		return (1 + countHeapNodes(root.getLeftChild()) + countHeapNodes(root.getRightChild()));
+	}
+	
+	private int countHeapNodes(IMutableArrayHeap heap, int index) {
+		if (index >= heap.getCapacity())
+			return 0;
+		
+		return (1 + countHeapNodes(heap, (index << 1)) + countHeapNodes(heap, (index << 1) + 1));
+	}
+
+	public static int max(int n1, int n2) {
+		return n1 > n2 ? n1 : n2;
+	}
+
+	/**
+	 * Assert a condition.
+	 * 
+	 * @param cond
+	 *            the condition to check
+	 * @param err
+	 *            message to throw
+	 * @param eclazz
+	 *            exception class to use
+	 */
+	public static void assertTrue(boolean cond, String err, Class<? extends Exception> eclazz) {
+		if (!cond) {
+			try {
+				Constructor<? extends Exception> ce = eclazz.getConstructor(String.class);
+				ce.newInstance(err);
+			} catch (NoSuchMethodException | SecurityException e) {
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static <T> void println(T o) {
+		System.out.println(o.toString());
+	}
+
+	public static <T> void print(T o) {
+		System.out.print(o.toString());
+	}
+
+	/**
+	 * Get random integer in range [min,max].
+	 */
+	public static int irand(int min, int max) {
+		return SEED.nextInt((max - min) + 1) + min;
+	}
+
+	/**
+	 * Get log2 of inquired value.
+	 */
+	public static double log2(double value) {
+		return Math.log10(value) / Math.log10(2);
+	}
+
+	/**
+	 * Write some content to a file. Overrides the file if it exists.
+	 * 
+	 * @param title
+	 *            the file title
+	 * @param content
+	 *            the text to write
+	 */
+	public static void writeToFile(String title, String content) {
+		title = filterTitle(title);
+		String ftitle = getOutputFilePath();
+
+		if (MEMORY.containsKey(title)) {
+			int lastId = MEMORY.get(title);
+			ftitle += title + (++lastId);
+			MEMORY.put(ftitle, lastId);
+		} else {
+			MEMORY.put(title, 0);
+			ftitle += title;
+		}
+
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(ftitle)));
+			bw.write(content);
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static int compareInts(int v1, int v2) {
+		return v1 > v2 ? 1 : v1 == v2 ? 0 : -1;
+	}
+
+	private static String filterTitle(String title) {
+		return title.replaceAll("[ *$^!;:,=)('\"&]", "_");
+	}
+
+	private static String getOutputFilePath() {
+		return "./src/main/resources/output/";
+	}
+	
+	public static final class Pair<A, B> {
+		public final A first;
+		public final B second;
+
+		public Pair(A first, B second) {
+			this.first = first;
+			this.second = second;
+		}
+	}
+
+}
+
+
+/////// isValid
+
+	
+//	private boolean isValid(int index) {
+//		// If a leaf node
+//		if (index > ((getCapacity() - 2) >> 1))
+//			return true;
+//
+//		// If an internal node and is greater than its children, and
+//		// same is recursively true for the children
+//		boolean validity = data.get(index) <= data.get((index << 1) + 1)
+//				&& data.get(index) <= data.get((index << 1) + 2)
+//				&& isValid((index << 1) + 1)
+//				&& isValid((index << 1) + 2);
+//		
+//		if(!validity) {
+//			Utils.println("Not valid !:");
+//			Utils.println("Index: " + index);
+//			Utils.println("data[index] <= data[index / 2 + 1]: " + (data.get(index) <= data.get((index << 1) + 1)));
+//			Utils.println("data[index] <= data[index / 2 + 2]: " + (data.get(index) <= data.get((index << 1) + 2)));
+//			Utils.println("isValid((index << 1) + 1): " + isValid((index << 1) + 1));
+//			Utils.println("isValid((index << 1) + 2): " + isValid((index << 1) + 2));
+//		}
+//		
+//		return validity;
+//	}
+
+
+//// 
+
+	@Test
+	public void testBuiltMutableAVL() {
+		long start = System.nanoTime();
+		StringBuilder sb = new StringBuilder();
+		// number of launches
+		int nb = 50;
+		
+		for(int i = 0; i < nb; ++i) {
+			long innerStart = System.nanoTime();
+			sb.setLength(0);
+			int min = -Utils.irand((int) Math.pow(2, 8), (int) Math.pow(2, 16));
+			int max = Utils.irand((int) Math.pow(2, 8), (int) Math.pow(2, 16));
+			int size = Utils.irand((int) Math.pow(2, 8), (int) Math.pow(2, 20));
+			
+			mavl = builder.buildFrom(Generator.getInstance().randomGeneration(size, min, max));
+			builder.clear();
+			
+			assertTrue(Utils.isMutableAVL(mavl, min, max));
+
+			sb.append("testBuiltMutableAVL | min:");
+			sb.append(min);
+			sb.append(", max:");
+			sb.append(max);
+			sb.append(", size:");
+			sb.append(size);
+			sb.append(" | took ");
+			sb.append((System.nanoTime() - innerStart) / 1000000);
+			sb.append(" ms.");
+			
+			Utils.println(sb.toString());
+		}
+		
+		Utils.println(nb + " testBuiltMutableAVL took " + (System.nanoTime() - start) / 1000000 + " ms.");
+	}
+
+
+		private static void startAVLBench(StringBuilder csvBuilder, BENCH_HINT hint, int size, int min, int max, int times) {
+		int realSize = (int) Math.pow(2, size);
+		IData dataset = Generator.getInstance().randomGeneration(realSize, min, max);
+		IMutableAVL avl = new MutableAVLBuilder().build();
+		
+		long processTime = 0L;
+		for(int time = 0; time < times; ++time) {
+			long innerStart = System.nanoTime();
+			
+			// processing
+			for(int i = 0; i < dataset.getSize(); ++i) {
+				avl.insert(avl.getRoot(), dataset.get(i));
+			}
+			
+			processTime += System.nanoTime() - innerStart;
+		}
+		
+		csvBuilder.append(Utils.log2(processTime / times));
+		csvBuilder.append("\n");
+	}
+
+	//		if(root == null) {
+//			root = new MutableRedBlackTreeNode(value, MutableRedBlackTreeNode.BLACK);
+//			return;
+//		}
+
+///
+
+
+package com.dzoum.ids.core.avl.mutable;
+
+import static com.dzoum.ids.utils.Utils.*;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+import com.dzoum.ids.app.bench.IBenchable;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTreeNode;
+import com.dzoum.ids.core.redblacktree.mutable.MutableRedBlackTree;
+import com.dzoum.ids.core.redblacktree.mutable.MutableRedBlackTreeNode;
+import com.dzoum.ids.model.IData;
+import com.dzoum.ids.utils.Utils;
+
+/**
+ * {@link IMutableAVL}
+ */
+public class MutableAVL implements IMutableAVL, IBenchable {
+
+	private IMutableAVLNode root;
+
+	public MutableAVL(IMutableAVLNode root) {
+		this.root = root;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVLNode insert(IMutableAVLNode node, int value) {
+		if (node == null)
+			return (new MutableAVLNode(value));
+
+		if (value < node.getValue())
+			node.setLeftChild(insert(node.getLeftChild(), value));
+		else if (value > node.getValue())
+			node.setRightChild(insert(node.getRightChild(), value));
+		else
+			return node; // Duplicate values not allowed
+
+		// Update height of this ancestor node
+		node.setHeight(1 + max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())));
+
+		int balance = getBalance(node);
+
+		// If this node becomes unbalanced, then there
+		// are 4 cases Left Left Case
+		if (balance > 1 && value < node.getLeftChild().getValue())
+			return rightRotate(node);
+
+		// Right Right Case
+		if (balance < -1 && value > node.getRightChild().getValue())
+			return leftRotate(node);
+
+		// Left Right Case
+		if (balance > 1 && value > node.getLeftChild().getValue()) {
+			node.setLeftChild(leftRotate(node.getLeftChild()));
+			return rightRotate(node);
+		}
+
+		// Right Left Case
+		if (balance < -1 && value < node.getRightChild().getValue()) {
+			node.setRightChild(rightRotate(node.getRightChild()));
+			return leftRotate(node);
+		}
+
+		return node;
+	}
+
+	private int getBalance(IMutableAVLNode node) {
+		if (node == null)
+			return 0;
+
+		return getNodeHeight(node.getLeftChild()) - getNodeHeight(node.getRightChild());
+	}
+
+	private IMutableAVLNode rightRotate(IMutableAVLNode node) {
+		IMutableAVLNode left = node.getLeftChild();
+		IMutableAVLNode lRightChild = left.getRightChild();
+
+		// Perform rotation
+		left.setRightChild(node);
+		node.setLeftChild(lRightChild);
+
+		// Update heights
+		node.setHeight(max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())) + 1);
+		left.setHeight(max(getNodeHeight(left.getLeftChild()), getNodeHeight(left.getRightChild())) + 1);
+
+		// Return new root
+		return left;
+	}
+
+	private IMutableAVLNode leftRotate(IMutableAVLNode node) {
+		IMutableAVLNode right = node.getRightChild();
+		IMutableAVLNode rightLeftChild = right.getLeftChild();
+
+		// Perform rotation
+		right.setLeftChild(node);
+		node.setRightChild(rightLeftChild);
+
+		// Update heights
+		node.setHeight(max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())) + 1);
+		right.setHeight(max(getNodeHeight(right.getLeftChild()), getNodeHeight(right.getRightChild())) + 1);
+
+		// Return new root
+		return right;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setRoot(IMutableAVLNode root) {
+		this.root = root;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVLNode remove(IMutableAVLNode node, int value) {
+		if (node == null)
+			return node;
+
+		// If the value to be deleted is smaller than
+		// the root's value then it is located in the left subtree
+		if (value < node.getValue())
+			node.setLeftChild(remove(node.getLeftChild(), value));
+
+		// If the value to be deleted is greater than the
+		// root's value, then it lies in right subtree
+		else if (value > node.getValue())
+			node.setRightChild(remove(node.getRightChild(), value));
+
+		// if value is same as root's value, then this is the node
+		// to be deleted
+		else {
+			// node with only one child or no child
+			if ((node.getLeftChild() == null) || (node.getRightChild() == null)) {
+				IMutableAVLNode tmp = null;
+				if (tmp == node.getLeftChild()) tmp = node.getRightChild();
+				else tmp = node.getLeftChild();
+
+				// No child case
+				if (tmp == null) {
+					tmp = node;
+					node = null;
+				} else {
+					node = tmp;
+				}
+			} else {
+				// node with two children: Get the in-order
+				// successor (smallest in the right subtree)
+				IMutableAVLNode tmp = getMinNode(node.getRightChild());
+
+				// Copy the inorder successor's data to this node
+				node.setValue(tmp.getValue());
+
+				// Delete the inorder successor
+				node.setRightChild(remove(node.getRightChild(), tmp.getValue()));
+			}
+		}
+
+		// If the tree had only one node then return
+		if (node == null)
+			return node;
+
+		// update height of the current node
+		node.setHeight(max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())) + 1);
+
+		// get the balance factor of this node (to check whether
+		// this node became unbalanced)
+		int balance = getBalance(node);
+
+		// If this node becomes unbalanced, then there are 4 cases
+		// Left Left Case
+		if (balance > 1 && getBalance(node.getLeftChild()) >= 0)
+			return rightRotate(node);
+
+		// Left Right Case
+		if (balance > 1 && getBalance(node.getLeftChild()) < 0) {
+			node.setLeftChild(leftRotate(node.getLeftChild()));
+			return rightRotate(node);
+		}
+
+		// Right Right Case
+		if (balance < -1 && getBalance(node.getRightChild()) <= 0)
+			return leftRotate(node);
+
+		// Right Left Case
+		if (balance < -1 && getBalance(node.getRightChild()) > 0) {
+			node.setRightChild(rightRotate(node.getRightChild()));
+			return leftRotate(node);
+		}
+
+		return node;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isEmpty() {
+		return root == null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVLNode getMinNode(IMutableAVLNode from) {
+		if(from == null) return from;
+		
+		IMutableAVLNode min = from;
+
+		while (min.getLeftChild() != null)
+			min = min.getLeftChild();
+
+		return min;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinValue(IMutableAVLNode from) {
+		IMutableAVLNode node = getMinNode(from);
+		if(node == null) throw new IllegalStateException("No minimum node found !");
+		return node.getValue();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVLNode getRoot() {
+		return root;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toStringWidthOrder() {
+		if(root == null) return "";
+		
+		StringBuilder sb = new StringBuilder();
+		Queue<IMutableAVLNode> nodes = new LinkedList<>();
+		nodes.add(root);
+		
+		while(!nodes.isEmpty()){
+			IMutableAVLNode node = nodes.poll();
+			sb.append(node.getValue());
+			sb.append(" ");
+			
+			if(node.getLeftChild() != null) nodes.add(node.getLeftChild());
+			if(node.getRightChild() != null) nodes.add(node.getRightChild());
+		}
+		
+		return sb.toString().trim();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toStringPreOrder() {
+		if(root == null) return "";
+		
+		StringBuilder sb = new StringBuilder();
+
+		if (root != null) {
+			sb.append(root.getValue());
+			sb.append(" ");
+			toStringPreOrder(sb, root.getLeftChild());
+			toStringPreOrder(sb, root.getRightChild());
+		}
+		
+		return sb.toString().trim();
+	}
+	
+	private void toStringPreOrder(StringBuilder sb, IMutableAVLNode node) {
+		if (node != null) {
+			sb.append(node.getValue());
+			sb.append(" ");
+			toStringPreOrder(sb, node.getLeftChild());
+			toStringPreOrder(sb, node.getRightChild());
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void printPreOrder() {
+		Utils.println(toStringPreOrder());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void printWidthOrder() {
+		Utils.println(toStringWidthOrder());
+	}
+
+	// TODO
+//	Algorithm for creating a balanced binary search tree from a sorted array:
+//		1. Initialize start as 0, end as (length of the array - 1)
+//		2. Set mid as (start+end)/2
+//		3. Create a tree node with mid as root (lets call it A).
+//		4. Recursively do following steps:
+//		    a). Calculate mid of left sub array and make it root of left sub tree of A.
+//		    b). Calculate mid of right sub array and make it root of right sub tree of A.
+	
+//	public void buildTree(int[] arr) {
+//		Node node = createBalancedBinaryTree(arr, 0, arr.length - 1);
+//		}
+//
+//		public Node createBalancedBinaryTree(int[] arr, int start, int end) {
+//
+//		if (start > end)
+//		return null;
+//
+//		// int mid = (start + end)/2; //avoid for overflow
+//		int mid = start + (end - start) / 2;
+//		Node node = new Node(arr[mid]);
+//		node.left = createBalancedBinaryTree(arr, start, mid - 1);
+//		node.right = createBalancedBinaryTree(arr, mid + 1, end);
+//
+//		return node;
+//		}
+	
+	@Override
+	public void benchCreate(IData dataset, int creationSize) {
+		IData sorted = dataset.clone().sort();
+		root = create(sorted, 0, creationSize);
+		Utils.println("avl ok: " + isMutableAVL(this, Integer.MIN_VALUE, Integer.MAX_VALUE));
+	}
+	
+	private IMutableAVLNode create(IData dataset, int start, int end) {
+		if(start > end) return null;
+		int mid = start + (end - start) >> 1;
+		IMutableAVLNode node = new MutableAVLNode(dataset.get(mid));
+		node.setLeftChild(create(dataset, start, mid - 1));
+		node.setRightChild(create(dataset, mid + 1, end));
+		return node;
+	}
+	
+//	@Override
+//	public void benchCreate(IData dataset, int creationSize) {
+//		IData sorted = dataset.clone().sort();
+//		root = new MutableAVLNode(dataset.get(0));
+//		IMutableAVLNode node = root;
+//		
+//		int mid = (sorted.getSize() - 1) >> 1;
+//		benchCreateRecurse(sorted, root, mid, sorted.getSize() - 1);
+//		
+////		for(int i = 1; i < creationSize; ++i) {
+////			IMutableAVLNode newNode = new MutableAVLNode(dataset.get(i));
+////			node.setLeftChild(newNode);
+////			node = newNode;
+////		}
+////		
+//		root = rightRotate(getRoot());
+////		Utils.println("avl height:" + getRoot().getHeight());
+//		Utils.println("avl ok: " + Utils.isMutableAVL(this, Integer.MIN_VALUE, Integer.MAX_VALUE));
+//		Utils.println("height: " + root.getHeight());
+//	}
+	
+	private void benchCreateRecurse(IData data, IMutableAVLNode father, int index, int size) {
+		if(index <= 0) return;
+		
+		IMutableAVLNode newNode = new MutableAVLNode(data.get(index));
+		IMutableAVLNode left = new MutableAVLNode(data.get(index >> 1));
+		IMutableAVLNode right = new MutableAVLNode(data.get((index + size - 1) >> 1));
+		newNode.setLeftChild(left);
+		newNode.setRightChild(right);
+		father.setLeftChild(newNode);
+		benchCreateRecurse(data, newNode, index >> 1, index);
+	}
+
+	@Override
+	public void benchInsertMin(int times) {
+		for(int i = 0; i < times; ++i) {
+			setRoot(insert(getRoot(), getMinValue(getRoot()) - 1));
+		}
+	}
+
+	@Override
+	public void benchRemoveMin(int times) {
+		IMutableAVLNode node = null;
+		for(int i = 0; i < times; ++i) {
+			node = remove(getRoot(), getMinValue(getRoot()));
+			if(node != null)
+				setRoot(node);
+		}
+	}
+
+/////
+
+package com.dzoum.ids.core.avl.mutable;
+
+import static com.dzoum.ids.utils.Utils.*;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+import com.dzoum.ids.app.bench.IBenchable;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTreeNode;
+import com.dzoum.ids.core.redblacktree.mutable.MutableRedBlackTree;
+import com.dzoum.ids.core.redblacktree.mutable.MutableRedBlackTreeNode;
+import com.dzoum.ids.model.IData;
+import com.dzoum.ids.utils.Utils;
+
+/**
+ * {@link IMutableAVL}
+ */
+public class MutableAVL implements IMutableAVL, IBenchable {
+
+	private IMutableAVLNode root;
+
+	public MutableAVL(IMutableAVLNode root) {
+		this.root = root;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVLNode insert(IMutableAVLNode node, int value) {
+		if (node == null)
+			return (new MutableAVLNode(value));
+
+		if (value < node.getValue())
+			node.setLeftChild(insert(node.getLeftChild(), value));
+		else if (value > node.getValue())
+			node.setRightChild(insert(node.getRightChild(), value));
+		else
+			return node; // Duplicate values not allowed
+
+		// Update height of this ancestor node
+		node.setHeight(1 + max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())));
+
+		int balance = getBalance(node);
+
+		// If this node becomes unbalanced, then there
+		// are 4 cases Left Left Case
+		if (balance > 1 && value < node.getLeftChild().getValue())
+			return rightRotate(node);
+
+		// Right Right Case
+		if (balance < -1 && value > node.getRightChild().getValue())
+			return leftRotate(node);
+
+		// Left Right Case
+		if (balance > 1 && value > node.getLeftChild().getValue()) {
+			node.setLeftChild(leftRotate(node.getLeftChild()));
+			return rightRotate(node);
+		}
+
+		// Right Left Case
+		if (balance < -1 && value < node.getRightChild().getValue()) {
+			node.setRightChild(rightRotate(node.getRightChild()));
+			return leftRotate(node);
+		}
+
+		return node;
+	}
+
+	private int getBalance(IMutableAVLNode node) {
+		if (node == null)
+			return 0;
+
+		return getNodeHeight(node.getLeftChild()) - getNodeHeight(node.getRightChild());
+	}
+
+	private IMutableAVLNode rightRotate(IMutableAVLNode node) {
+		IMutableAVLNode left = node.getLeftChild();
+		IMutableAVLNode lRightChild = left.getRightChild();
+
+		// Perform rotation
+		left.setRightChild(node);
+		node.setLeftChild(lRightChild);
+
+		// Update heights
+		node.setHeight(max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())) + 1);
+		left.setHeight(max(getNodeHeight(left.getLeftChild()), getNodeHeight(left.getRightChild())) + 1);
+
+		// Return new root
+		return left;
+	}
+
+	private IMutableAVLNode leftRotate(IMutableAVLNode node) {
+		IMutableAVLNode right = node.getRightChild();
+		IMutableAVLNode rightLeftChild = right.getLeftChild();
+
+		// Perform rotation
+		right.setLeftChild(node);
+		node.setRightChild(rightLeftChild);
+
+		// Update heights
+		node.setHeight(max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())) + 1);
+		right.setHeight(max(getNodeHeight(right.getLeftChild()), getNodeHeight(right.getRightChild())) + 1);
+
+		// Return new root
+		return right;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setRoot(IMutableAVLNode root) {
+		this.root = root;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVLNode remove(IMutableAVLNode node, int value) {
+		if (node == null)
+			return node;
+
+		// If the value to be deleted is smaller than
+		// the root's value then it is located in the left subtree
+		if (value < node.getValue())
+			node.setLeftChild(remove(node.getLeftChild(), value));
+
+		// If the value to be deleted is greater than the
+		// root's value, then it lies in right subtree
+		else if (value > node.getValue())
+			node.setRightChild(remove(node.getRightChild(), value));
+
+		// if value is same as root's value, then this is the node
+		// to be deleted
+		else {
+			// node with only one child or no child
+			if ((node.getLeftChild() == null) || (node.getRightChild() == null)) {
+				IMutableAVLNode tmp = null;
+				if (tmp == node.getLeftChild()) tmp = node.getRightChild();
+				else tmp = node.getLeftChild();
+
+				// No child case
+				if (tmp == null) {
+					tmp = node;
+					node = null;
+				} else {
+					node = tmp;
+				}
+			} else {
+				// node with two children: Get the in-order
+				// successor (smallest in the right subtree)
+				IMutableAVLNode tmp = getMinNode(node.getRightChild());
+
+				// Copy the inorder successor's data to this node
+				node.setValue(tmp.getValue());
+
+				// Delete the inorder successor
+				node.setRightChild(remove(node.getRightChild(), tmp.getValue()));
+			}
+		}
+
+		// If the tree had only one node then return
+		if (node == null)
+			return node;
+
+		// update height of the current node
+		node.setHeight(max(getNodeHeight(node.getLeftChild()), getNodeHeight(node.getRightChild())) + 1);
+
+		// get the balance factor of this node (to check whether
+		// this node became unbalanced)
+		int balance = getBalance(node);
+
+		// If this node becomes unbalanced, then there are 4 cases
+		// Left Left Case
+		if (balance > 1 && getBalance(node.getLeftChild()) >= 0)
+			return rightRotate(node);
+
+		// Left Right Case
+		if (balance > 1 && getBalance(node.getLeftChild()) < 0) {
+			node.setLeftChild(leftRotate(node.getLeftChild()));
+			return rightRotate(node);
+		}
+
+		// Right Right Case
+		if (balance < -1 && getBalance(node.getRightChild()) <= 0)
+			return leftRotate(node);
+
+		// Right Left Case
+		if (balance < -1 && getBalance(node.getRightChild()) > 0) {
+			node.setRightChild(rightRotate(node.getRightChild()));
+			return leftRotate(node);
+		}
+
+		return node;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isEmpty() {
+		return root == null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVLNode getMinNode(IMutableAVLNode from) {
+		if(from == null) return from;
+		
+		IMutableAVLNode min = from;
+
+		while (min.getLeftChild() != null)
+			min = min.getLeftChild();
+
+		return min;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int getMinValue(IMutableAVLNode from) {
+		IMutableAVLNode node = getMinNode(from);
+		if(node == null) throw new IllegalStateException("No minimum node found !");
+		return node.getValue();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IMutableAVLNode getRoot() {
+		return root;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toStringWidthOrder() {
+		if(root == null) return "";
+		
+		StringBuilder sb = new StringBuilder();
+		Queue<IMutableAVLNode> nodes = new LinkedList<>();
+		nodes.add(root);
+		
+		while(!nodes.isEmpty()){
+			IMutableAVLNode node = nodes.poll();
+			sb.append(node.getValue());
+			sb.append(" ");
+			
+			if(node.getLeftChild() != null) nodes.add(node.getLeftChild());
+			if(node.getRightChild() != null) nodes.add(node.getRightChild());
+		}
+		
+		return sb.toString().trim();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toStringPreOrder() {
+		if(root == null) return "";
+		
+		StringBuilder sb = new StringBuilder();
+
+		if (root != null) {
+			sb.append(root.getValue());
+			sb.append(" ");
+			toStringPreOrder(sb, root.getLeftChild());
+			toStringPreOrder(sb, root.getRightChild());
+		}
+		
+		return sb.toString().trim();
+	}
+	
+	private void toStringPreOrder(StringBuilder sb, IMutableAVLNode node) {
+		if (node != null) {
+			sb.append(node.getValue());
+			sb.append(" ");
+			toStringPreOrder(sb, node.getLeftChild());
+			toStringPreOrder(sb, node.getRightChild());
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void printPreOrder() {
+		Utils.println(toStringPreOrder());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void printWidthOrder() {
+		Utils.println(toStringWidthOrder());
+	}
+
+	// TODO
+//	Algorithm for creating a balanced binary search tree from a sorted array:
+//		1. Initialize start as 0, end as (length of the array - 1)
+//		2. Set mid as (start+end)/2
+//		3. Create a tree node with mid as root (lets call it A).
+//		4. Recursively do following steps:
+//		    a). Calculate mid of left sub array and make it root of left sub tree of A.
+//		    b). Calculate mid of right sub array and make it root of right sub tree of A.
+	
+//	public void buildTree(int[] arr) {
+//		Node node = createBalancedBinaryTree(arr, 0, arr.length - 1);
+//		}
+//
+//		public Node createBalancedBinaryTree(int[] arr, int start, int end) {
+//
+//		if (start > end)
+//		return null;
+//
+//		// int mid = (start + end)/2; //avoid for overflow
+//		int mid = start + (end - start) / 2;
+//		Node node = new Node(arr[mid]);
+//		node.left = createBalancedBinaryTree(arr, start, mid - 1);
+//		node.right = createBalancedBinaryTree(arr, mid + 1, end);
+//
+//		return node;
+//		}
+	
+	@Override
+	public void benchCreate(IData dataset, int creationSize) {
+		IData sorted = dataset.clone().sort();
+		root = create(sorted, 0, creationSize);
+		boolean valid = isMutableAVL(this, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		if(!valid) {
+			rightRotate(getRoot());
+			leftRotate(getRoot());
+		}
+		Utils.println("avl "  + root.getHeight() + " ok: " + valid);
+	}
+	
+	private IMutableAVLNode create(IData dataset, int start, int end) {
+		if(start >= end) return null;
+		int mid = (end + start) >> 1;
+		IMutableAVLNode node = new MutableAVLNode(dataset.get(mid));
+		node.setLeftChild(create(dataset, start, mid - 1));
+		node.setRightChild(create(dataset, mid + 1, end));
+		return node;
+	}
+	
+//	@Override
+//	public void benchCreate(IData dataset, int creationSize) {
+//		IData sorted = dataset.clone().sort();
+//		root = new MutableAVLNode(dataset.get(0));
+//		IMutableAVLNode node = root;
+//		
+//		int mid = (sorted.getSize() - 1) >> 1;
+//		benchCreateRecurse(sorted, root, mid, sorted.getSize() - 1);
+//		
+////		for(int i = 1; i < creationSize; ++i) {
+////			IMutableAVLNode newNode = new MutableAVLNode(dataset.get(i));
+////			node.setLeftChild(newNode);
+////			node = newNode;
+////		}
+////		
+//		root = rightRotate(getRoot());
+////		Utils.println("avl height:" + getRoot().getHeight());
+//		Utils.println("avl ok: " + Utils.isMutableAVL(this, Integer.MIN_VALUE, Integer.MAX_VALUE));
+//		Utils.println("height: " + root.getHeight());
+//	}
+	
+	private void benchCreateRecurse(IData data, IMutableAVLNode father, int index, int size) {
+		if(index <= 0) return;
+		
+		IMutableAVLNode newNode = new MutableAVLNode(data.get(index));
+		IMutableAVLNode left = new MutableAVLNode(data.get(index >> 1));
+		IMutableAVLNode right = new MutableAVLNode(data.get((index + size - 1) >> 1));
+		newNode.setLeftChild(left);
+		newNode.setRightChild(right);
+		father.setLeftChild(newNode);
+		benchCreateRecurse(data, newNode, index >> 1, index);
+	}
+
+	@Override
+	public void benchInsertMin(int times) {
+		for(int i = 0; i < times; ++i) {
+			setRoot(insert(getRoot(), getMinValue(getRoot()) - 1));
+		}
+	}
+
+	@Override
+	public void benchRemoveMin(int times) {
+		IMutableAVLNode node = null;
+		for(int i = 0; i < times; ++i) {
+			node = remove(getRoot(), getMinValue(getRoot()));
+			if(node != null)
+				setRoot(node);
+		}
+	}
+
+
+}
+
+
+}
+
+
+
+////////////
+
+
+
+package com.dzoum.ids.app.bench;
+
+import com.dzoum.ids.core.avl.mutable.IMutableAVL;
+import com.dzoum.ids.core.avl.mutable.MutableAVL;
+import com.dzoum.ids.core.avl.mutable.MutableAVLBuilder;
+import com.dzoum.ids.core.heap.mutable.array.MinMutableArrayHeap;
+import com.dzoum.ids.core.redblacktree.mutable.IMutableRedBlackTree;
+import com.dzoum.ids.core.redblacktree.mutable.MutableRedBlackTree;
+import com.dzoum.ids.model.IData;
+import com.dzoum.ids.model.generation.Generator;
+import com.dzoum.ids.utils.Utils;
+
+/**
+ * Comparaisons entre tas et arbres de recherches pour
+ * utilisation en tant que file de priorité
+ * (création à partir d'un tableau de valeur, insertion et supression du minimum)
+ */
+public class BenchMutableQueues {
+
+	public static void main(String[] args) {
+		launchArrayHeapVSAVLBench();
+	}
+	
+	public static void launchArrayHeapVSAVLBench() {
+		// creation bench
+//		String bench = versusBench(BENCH_HINT.CREATION, BENCHABLE_STRUCTURE.HEAP,
+//				BENCHABLE_STRUCTURE.AVL, BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
+//		Utils.println(bench);
+//		Utils.writeToFile("arrayHeapVSAVLvsRedCreationBench1.csv", ".csv", bench);
+		
+		long start = System.nanoTime();
+		// min insertion bench
+//		String bench = versusBench(BENCH_HINT.INSERTION_MIN, BENCHABLE_STRUCTURE.HEAP,
+//				BENCHABLE_STRUCTURE.AVL, BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
+//		Utils.println("Success in " + (System.nanoTime() - start) / 1000000 + " ms");
+//		Utils.println(bench);
+//		Utils.writeToFile("arrayHeapVSAVLvsRedMinInsertionBench1.csv", ".csv", bench);
+		
+		// min deletion bench
+//		bench = versusBench(BENCH_HINT.DELETION_MIN, BENCHABLE_STRUCTURE.HEAP,
+//				BENCHABLE_STRUCTURE.AVL, BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
+//		Utils.println(bench);
+//		Utils.writeToFile("arrayHeapVSAVLvsRedMinDeletionBench1.csv", ".csv", bench);
+	}
+	
+	private static String versusBench(BENCH_HINT hint, BENCHABLE_STRUCTURE bs1, BENCHABLE_STRUCTURE bs2, BENCHABLE_STRUCTURE bs3, String separator) {
+		StringBuilder heapCSVBuilder = new StringBuilder();
+		StringBuilder avlCSVBuilder = new StringBuilder();
+		StringBuilder redCSVBuilder = new StringBuilder();
+		
+		benchStructureOn(0, heapCSVBuilder, separator, bs1, hint, 4, 20, -1000, 1000, 50);
+		benchStructureOn(1, avlCSVBuilder, separator, bs2, hint, 4, 20, -1000, 1000, 50);
+		benchStructureOn(2, redCSVBuilder, separator, bs3, hint, 4, 20, -1000, 1000, 50);
+		
+		String[] splitHeapContent = heapCSVBuilder.toString().split("\n");
+		String[] splitAvlContent = avlCSVBuilder.toString().split("\n");
+		String[] splitRedContent = redCSVBuilder.toString().split("\n");
+		
+		if(splitHeapContent.length != splitAvlContent.length || splitAvlContent.length != splitRedContent.length
+				|| splitRedContent.length != splitHeapContent.length)
+			throw new IllegalStateException("Internal error while processing benchmark occured.");
+		
+		heapCSVBuilder.setLength(0);
+		
+		for(int i = 0; i < splitAvlContent.length; ++i) {
+			heapCSVBuilder.append(splitHeapContent[i]);
+			heapCSVBuilder.append(separator);
+			heapCSVBuilder.append(splitAvlContent[i]);
+			heapCSVBuilder.append(separator);
+			heapCSVBuilder.append(splitRedContent[i]);
+			heapCSVBuilder.append("\n");
+		}
+		
+		return heapCSVBuilder.toString();
+	}
+	
+	private static void benchStructureOn(int index, StringBuilder csvBuilder, String separator,
+			BENCHABLE_STRUCTURE bs, BENCH_HINT hint, int minSize, int maxSize,
+			int min, int max, int times) {
+		for(int sizePow = minSize; sizePow <= maxSize; ++sizePow) {
+			startBench(csvBuilder, separator, hint, bs, sizePow, min, max, times, index != 0);
+		}
+	}
+	
+	private static void startBench(StringBuilder csvBuilder, String separator,
+			BENCH_HINT hint, BENCHABLE_STRUCTURE bs,
+			int size, int min, int max, int times, boolean follower) {
+		int realSize = (int) Math.pow(2, size);
+		IBenchable benchable = BENCHABLE_STRUCTURE.get(bs, realSize);
+		
+		long processTime = 0L;
+		for(int time = 0; time < times; ++time) {
+			IData dataset = Generator.getInstance().randomGeneration(realSize, min, max);
+			long innerStart = 0L;
+			
+			if(hint == BENCH_HINT.CREATION) {
+				innerStart = System.nanoTime();
+				// creation
+				benchable.benchCreate(dataset, dataset.getSize());
+			}
+		
+			if(hint == BENCH_HINT.INSERTION_MIN || hint == BENCH_HINT.DELETION_MIN) {
+				if(hint == BENCH_HINT.INSERTION_MIN) {
+					// min insertion
+					if(bs == BENCHABLE_STRUCTURE.AVL) {
+						MutableAVL avl = (MutableAVL) benchable;
+						avl.setRoot(avl.insert(avl.getRoot(), dataset.get(dataset.getSize() - 1)));
+						innerStart = System.nanoTime();
+						// benchable.benchInsertMin(dataset.getSize() - 1);
+						avl.benchInsertMin(dataset.getSize());
+					} else if(bs == BENCHABLE_STRUCTURE.RED_BLACK_TREE){
+						MutableRedBlackTree tree = (MutableRedBlackTree) benchable;
+						tree.insert(dataset.get(dataset.getSize() - 1));
+						innerStart = System.nanoTime();
+						tree.benchInsertMin(dataset.getSize() - 1);
+					} else {
+						innerStart = System.nanoTime();
+						benchable.benchInsertMin(dataset.getSize());
+					}
+				} else {
+					// min deletion
+					// setup state for insertion or deletion
+					benchable.setupForBench(dataset, dataset.getSize());
+					innerStart = System.nanoTime();
+					benchable.benchRemoveMin(dataset.getSize());
+				}
+			}
+			
+			processTime += System.nanoTime() - innerStart;
+			if(innerStart == 0L) throw new IllegalStateException();
+		}
+		
+		if(!follower) {
+			csvBuilder.append(size);
+			csvBuilder.append(separator);
+		}
+		
+		csvBuilder.append(Utils.log2(processTime / times));
+		csvBuilder.append("\n");
+	}
+	
+	private static enum BENCH_HINT {
+		CREATION, INSERTION_MIN, DELETION_MIN, INSERTIONS, DELETIONS;
+	}
+	
+	private static enum BENCHABLE_STRUCTURE { 
+		HEAP, AVL, RED_BLACK_TREE;
+		
+		public static IBenchable get(BENCHABLE_STRUCTURE bs, int capacity) {
+			switch (bs) {
+			case HEAP:
+				return new MinMutableArrayHeap(capacity);
+			case AVL:
+				return (IBenchable) new MutableAVLBuilder().build();
+			case RED_BLACK_TREE:
+				return new MutableRedBlackTree();
+			default:
+				throw new IllegalStateException("Unknown structure.");
+			}
+		}
+	}
+	
+}

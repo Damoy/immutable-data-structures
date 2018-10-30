@@ -72,6 +72,8 @@ public class MutableAVL implements IMutableAVL, IBenchable {
 	}
 
 	private IMutableAVLNode rightRotate(IMutableAVLNode node) {
+		if(node.getLeftChild() == null) return null;
+		
 		IMutableAVLNode left = node.getLeftChild();
 		IMutableAVLNode lRightChild = left.getRightChild();
 
@@ -88,6 +90,7 @@ public class MutableAVL implements IMutableAVL, IBenchable {
 	}
 
 	private IMutableAVLNode leftRotate(IMutableAVLNode node) {
+		if(node.getRightChild() == null) return null;
 		IMutableAVLNode right = node.getRightChild();
 		IMutableAVLNode rightLeftChild = right.getLeftChild();
 

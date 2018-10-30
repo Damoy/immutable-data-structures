@@ -216,4 +216,17 @@ public class MutableRedBlackTreeNode implements IMutableRedBlackTreeNode {
 		this.rightChild = rightChild;
 	}
 
+	
+	private int orderCount = 0;
+	
+	@Override
+	public int getBlackCount() {
+		return orderCount;
+	}
+
+	@Override
+	public void setBlackCount(int v) {
+		this.orderCount = v;
+	}
+
 }

@@ -41,4 +41,7 @@ public interface IMutableRedBlackTreeNode extends INode {
 	 */
 	public void setRightChild(IMutableRedBlackTreeNode rightChild);
 	
+	// Tools to ease red black tree validity check.
+	public int getBlackCount();
+	public void setBlackCount(int v);
 }

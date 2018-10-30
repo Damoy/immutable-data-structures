@@ -1,5 +1,6 @@
 package com.dzoum.ids.model;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -146,6 +147,15 @@ public class Data implements IData {
 			content[i] = a;
 		}
 		
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public IData sort() {
+		Arrays.sort(content);
 		return this;
 	}
 

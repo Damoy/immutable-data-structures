@@ -2,9 +2,28 @@ package com.dzoum.ids.core.redblacktree.mutable;
 
 public interface IMutableRedBlackTree {
 
-	// public IRedBlackTreeNode insert(IRedBlackTreeNode node, int value);
 	public void insert(int value);
+	
+	/**
+	 * Remove the roots.
+	 */
 	public IMutableRedBlackTreeNode remove();
+	
+	/**
+	 * Remove given node.
+	 */
+	public void remove(IMutableRedBlackTreeNode node);
+	
+	/**
+	 * Remove node of given value.
+	 */
+	public IMutableRedBlackTreeNode removeGivenValue(int value);
+	
+	/**
+	 * Look for the node with value inquired one,
+	 * if does not exist, return last tree node while traversing.
+	 */
+	public IMutableRedBlackTreeNode search(int value);
 	
 	/**
 	 * Get the red-black tree's node that has the minimum value.
@@ -36,6 +55,7 @@ public interface IMutableRedBlackTree {
 	public String toStringWidthOrder();
 	public String toStringPreOrder();
 	
+	public void printColoredWidthOrder();
 	public void printWidthOrder();
 	public void printPreOrder();
 	

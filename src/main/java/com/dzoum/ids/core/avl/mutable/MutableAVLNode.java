@@ -57,13 +57,12 @@ public class MutableAVLNode implements IMutableAVLNode {
 		MutableAVLNode onode = (MutableAVLNode) o;
 		
 		boolean value = getValue() == onode.getValue();
-		boolean height = getHeight() == onode.getHeight();
 		boolean left = getLeftChild() == null ? (onode.getLeftChild() == null)
 				: getLeftChild().equals(onode.getLeftChild());
 		boolean right = getRightChild() == null ? (onode.getRightChild() == null)
 				: getRightChild().equals(onode.getRightChild());
 		
-		return value && height && left && right;
+		return value && left && right;
 	}
 
 	@Override
@@ -74,6 +73,13 @@ public class MutableAVLNode implements IMutableAVLNode {
 	@Override
 	public int getHeight() {
 		return height;
+//		if(getLeftChild() == null && getRightChild() == null) return 0;
+//		int total = 1;
+//		if(getLeftChild() != null)
+//			total += getLeftChild().getHeight();
+//		if(getRightChild() != null)
+//			total += getRightChild().getHeight();
+//		return total;
 	}
 
 	@Override

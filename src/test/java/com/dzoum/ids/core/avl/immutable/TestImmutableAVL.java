@@ -1,6 +1,5 @@
 package com.dzoum.ids.core.avl.immutable;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -13,7 +12,6 @@ import org.junit.runners.JUnit4;
 public class TestImmutableAVL {
 
 	@Test
-	@Ignore
 	public void testInsertion() {
 		IImmutableAVL left = new ImmutableAVL(6);
 		IImmutableAVL right = new ImmutableAVL(56);
