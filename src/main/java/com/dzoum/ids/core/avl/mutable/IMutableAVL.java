@@ -41,6 +41,14 @@ public interface IMutableAVL {
 	public int getMinValue(IMutableAVLNode from);
 	
 	/**
+	 * Search for a value in the tree.
+	 * 
+	 * Returns the associated node if value exists.
+	 * Returns the last traversed node otherwise.
+	 */
+	public IMutableAVLNode search(int value);
+	
+	/**
 	 * Is the AVL empty ?
 	 */
 	public boolean isEmpty();
@@ -69,5 +77,6 @@ public interface IMutableAVL {
 	 * Get pre-order representation
 	 */
 	public String toStringPreOrder();
+	
 	
 }

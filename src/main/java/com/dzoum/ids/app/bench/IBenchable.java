@@ -22,16 +22,21 @@ public interface IBenchable {
 	/**
 	 * Alias for benchmark structure insertions.
 	 */
-	public void benchInsertions(int times);
+	public void benchInsertions(IData dataset, int times);
 	
 	/**
 	 * Alias for benchmark structure removals.
 	 */
-	public void benchRemovals(int times);
+	public void benchRemovals(IData dataset, int times);
 	
 	/**
 	 * Tool to prepare insertions or removals.
 	 */
 	public void setupForBench(IData dataset, int creationSize);
+	
+	/**
+	 * Alias for benchmark structure search.
+	 */
+	public void benchSearch(IData dataset, int times);
 	
 }

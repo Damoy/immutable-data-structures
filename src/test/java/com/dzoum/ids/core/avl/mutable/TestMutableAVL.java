@@ -258,4 +258,11 @@ public class TestMutableAVL {
 		assertEquals(mavl.toStringPreOrder(), "78 4 1 99");
 	}
 	
+	@Test
+	public void testSearch() {
+		mavl = builder.insert(2, 8, 65, 4, 876).build();
+		assertEquals(mavl.search(4).getValue(), 4);
+		assertEquals(mavl.search(500).getValue(), 876);
+	}
+	
 }

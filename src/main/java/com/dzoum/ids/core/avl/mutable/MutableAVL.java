@@ -334,23 +334,53 @@ public class MutableAVL implements IMutableAVL, IBenchable {
 	}
 
 	@Override
-	public void benchInsertions(int times) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void benchRemovals(int times) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void setupForBench(IData dataset, int creationSize) {
 		root = new MutableAVLNode(dataset.get(0));
 		for(int i = 1; i < creationSize; ++i) {
 			setRoot(insert(getRoot(), dataset.get(i)));
 		}
+	}
+
+	@Override
+	public void benchInsertions(IData dataset, int times) {
+		for(int i = 0; i < times; ++i)
+			setRoot(insert(getRoot(), dataset.getRandomValue()));
+	}
+
+	@Override
+	public void benchRemovals(IData dataset, int times) {
+		for(int i = 0; i < times; ++i)
+			setRoot(remove(getRoot(), dataset.getRandomValue()));
+	}
+
+	@Override
+	public void benchSearch(IData dataset, int times) {
+		for(int i = 0; i < times; ++i) {
+			
+		}
+	}
+	
+	@Override
+	public IMutableAVLNode search(int value) {
+		IMutableAVLNode tmp = root;
+		
+		while(tmp != null){
+			if(value < tmp.getValue()){
+				if(tmp.getLeftChild() == null)
+					break;
+				else
+					tmp = tmp.getLeftChild();
+			} else if(value == tmp.getValue()){
+				break;
+			} else {
+				if(tmp.getRightChild() == null)
+					break;
+				else 
+					tmp = tmp.getRightChild();
+			}
+		}
+		
+		return tmp;
 	}
 
 }

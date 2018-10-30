@@ -16,28 +16,75 @@ import com.dzoum.ids.utils.Utils;
 public class BenchMutableQueues {
 
 	public static void main(String[] args) {
-		launchArrayHeapVSAVLBench();
+		// launchArrayHeapVSAVLBench1();
+		// launchAVLvsRedBench();
+		launchAVLvsRedSearchsBench();
 	}
 	
-	public static void launchArrayHeapVSAVLBench() {
+	public static void launchArrayHeapVSAVLBench1() {
 		// creation bench
-//		String bench = versusBench(BENCH_HINT.CREATION, BENCHABLE_STRUCTURE.HEAP,
-//				BENCHABLE_STRUCTURE.AVL, BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
-//		Utils.println(bench);
-//		Utils.writeToFile("arrayHeapVSAVLvsRedCreationBench1.csv", ".csv", bench);
+		String bench = versusBench(BENCH_HINT.CREATION, BENCHABLE_STRUCTURE.HEAP,
+				BENCHABLE_STRUCTURE.AVL, BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
+		Utils.println(bench);
+		Utils.writeToFile("arrayHeapVSAVLvsRedCreationBench1.csv", ".csv", bench);
 		
 		// min insertion bench
-//		String bench = versusBench(BENCH_HINT.INSERTION_MIN, BENCHABLE_STRUCTURE.HEAP,
-//				BENCHABLE_STRUCTURE.AVL, BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
-//		Utils.println("Success in " + (System.nanoTime() - start) / 1000000 + " ms");
-//		Utils.println(bench);
-//		Utils.writeToFile("arrayHeapVSAVLvsRedMinInsertionBench1.csv", ".csv", bench);
+		bench = versusBench(BENCH_HINT.INSERTION_MIN, BENCHABLE_STRUCTURE.HEAP,
+				BENCHABLE_STRUCTURE.AVL, BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
+		Utils.println(bench);
+		Utils.writeToFile("arrayHeapVSAVLvsRedMinInsertionBench1.csv", ".csv", bench);
 		
 		// min deletion bench
-		String bench = versusBench(BENCH_HINT.DELETION_MIN, BENCHABLE_STRUCTURE.HEAP,
+		bench = versusBench(BENCH_HINT.DELETION_MIN, BENCHABLE_STRUCTURE.HEAP,
 				BENCHABLE_STRUCTURE.AVL, BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
 		Utils.println(bench);
 		Utils.writeToFile("arrayHeapVSAVLvsRedMinDeletionBench1.csv", ".csv", bench);
+	}
+	
+	public static void launchAVLvsRedBench() {
+		// creation bench
+		String bench = versusBench(BENCH_HINT.INSERTIONS, BENCHABLE_STRUCTURE.AVL,
+				BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
+		Utils.println(bench);
+		Utils.writeToFile("AVLvsRedInsertionsBench1.csv", ".csv", bench);
+		
+		// min insertion bench
+		bench = versusBench(BENCH_HINT.DELETIONS, BENCHABLE_STRUCTURE.AVL,
+				BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
+		Utils.println(bench);
+		Utils.writeToFile("AVLvsRedDeletionsBench3.csv", ".csv", bench);
+	}
+	
+	public static void launchAVLvsRedSearchsBench() {
+		String bench = versusBench(BENCH_HINT.SEARCHS, BENCHABLE_STRUCTURE.AVL,
+				BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
+		Utils.println(bench);
+		Utils.writeToFile("AVLvsRedSearchsBench1.csv", ".csv", bench);
+	}
+	
+	private static String versusBench(BENCH_HINT hint, BENCHABLE_STRUCTURE bs1, BENCHABLE_STRUCTURE bs2, String separator) {
+		StringBuilder avlCSVBuilder = new StringBuilder();
+		StringBuilder redCSVBuilder = new StringBuilder();
+		
+		benchStructureOn(0, avlCSVBuilder, separator, bs1, hint, 4, 20, -1000, 1000, 50);
+		benchStructureOn(1, redCSVBuilder, separator, bs2, hint, 4, 20, -1000, 1000, 50);
+		
+		String[] splitHeapContent = avlCSVBuilder.toString().split("\n");
+		String[] splitAvlContent = redCSVBuilder.toString().split("\n");
+		
+		if(splitHeapContent.length != splitAvlContent.length)
+			throw new IllegalStateException("Internal error while processing benchmark occured.");
+		
+		avlCSVBuilder.setLength(0);
+		
+		for(int i = 0; i < splitAvlContent.length; ++i) {
+			avlCSVBuilder.append(splitHeapContent[i]);
+			avlCSVBuilder.append(separator);
+			avlCSVBuilder.append(splitAvlContent[i]);
+			avlCSVBuilder.append("\n");
+		}
+		
+		return avlCSVBuilder.toString();
 	}
 	
 	private static String versusBench(BENCH_HINT hint, BENCHABLE_STRUCTURE bs1, BENCHABLE_STRUCTURE bs2, BENCHABLE_STRUCTURE bs3, String separator) {
@@ -123,6 +170,50 @@ public class BenchMutableQueues {
 				}
 			}
 			
+			if(hint == BENCH_HINT.INSERTIONS) {
+				dataset = Generator.getInstance().randomSetGeneration(realSize, min, max);
+				if(bs == BENCHABLE_STRUCTURE.AVL) {
+					MutableAVL avl = (MutableAVL) benchable;
+					avl.setRoot(avl.insert(avl.getRoot(), dataset.get(dataset.getSize() - 1)));
+					innerStart = System.nanoTime();
+					avl.benchInsertions(dataset, dataset.getSize() - 1);
+				} else if(bs == BENCHABLE_STRUCTURE.RED_BLACK_TREE) {
+					MutableRedBlackTree tree = (MutableRedBlackTree) benchable;
+					tree.insert(dataset.get(dataset.getSize() - 1));
+					innerStart = System.nanoTime();
+					tree.benchInsertions(dataset, dataset.getSize() - 1);
+				}
+			}
+			
+			if(hint == BENCH_HINT.DELETIONS){
+				if(bs == BENCHABLE_STRUCTURE.AVL) {
+					MutableAVL avl = (MutableAVL) benchable;
+					avl.setupForBench(dataset, dataset.getSize());
+					innerStart = System.nanoTime();
+					avl.benchRemovals(dataset, dataset.getSize());
+				} else if(bs == BENCHABLE_STRUCTURE.RED_BLACK_TREE) {
+					MutableRedBlackTree tree = (MutableRedBlackTree) benchable;
+					tree.setupForBench(dataset, dataset.getSize());
+					innerStart = System.nanoTime();
+					tree.benchRemovals(dataset, dataset.getSize());
+				}
+			}
+			
+			if(hint == BENCH_HINT.SEARCHS) {
+				dataset = Generator.getInstance().randomSetGeneration(realSize, min, max);
+				if(bs == BENCHABLE_STRUCTURE.AVL) {
+					MutableAVL avl = (MutableAVL) benchable;
+					avl.setupForBench(dataset, dataset.getSize());
+					innerStart = System.nanoTime();
+					avl.benchSearch(dataset, dataset.getSize());
+				} else if(bs == BENCHABLE_STRUCTURE.RED_BLACK_TREE) {
+					MutableRedBlackTree tree = (MutableRedBlackTree) benchable;
+					tree.setupForBench(dataset, dataset.getSize());
+					innerStart = System.nanoTime();
+					tree.benchSearch(dataset, dataset.getSize());
+				}
+			}
+			
 			processTime += System.nanoTime() - innerStart;
 			if(innerStart == 0L) throw new IllegalStateException();
 		}
@@ -137,7 +228,7 @@ public class BenchMutableQueues {
 	}
 	
 	private static enum BENCH_HINT {
-		CREATION, INSERTION_MIN, DELETION_MIN, INSERTIONS, DELETIONS;
+		CREATION, INSERTION_MIN, DELETION_MIN, INSERTIONS, DELETIONS, SEARCHS;
 	}
 	
 	private static enum BENCHABLE_STRUCTURE { 

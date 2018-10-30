@@ -14,4 +14,6 @@ public interface IGenerator {
 	 * @param max value
 	 */
 	public IData randomGeneration(int size, int min, int max);
+	
+	public IData randomSetGeneration(int size, int min, int max);
 }

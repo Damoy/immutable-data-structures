@@ -1,8 +1,6 @@
 package com.dzoum.ids.core.heap.mutable.array;
 
-
 import com.dzoum.ids.app.bench.IBenchable;
-import com.dzoum.ids.core.avl.mutable.MutableAVLNode;
 import com.dzoum.ids.model.Data;
 import com.dzoum.ids.model.IData;
 import com.dzoum.ids.utils.Utils;
@@ -274,19 +272,25 @@ public class MinMutableArrayHeap implements IMutableArrayHeap, IBenchable {
 	}
 
 	@Override
-	public void benchInsertions(int times) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void benchRemovals(int times) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void setupForBench(IData dataset, int creationSize) {
 		benchCreate(dataset, creationSize);
+	}
+
+	@Override
+	public void benchInsertions(IData dataset, int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchRemovals(IData dataset, int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchSearch(IData dataset, int times) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import com.dzoum.ids.utils.Utils;
+
 /**
  * {@link IData}
  */
@@ -157,6 +159,11 @@ public class Data implements IData {
 	public IData sort() {
 		Arrays.sort(content);
 		return this;
+	}
+
+	@Override
+	public int getRandomValue() {
+		return content[Utils.irand(0, content.length - 1)];
 	}
 
 }

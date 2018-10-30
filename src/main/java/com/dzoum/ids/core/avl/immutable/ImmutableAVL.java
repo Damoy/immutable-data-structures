@@ -90,6 +90,12 @@ public class ImmutableAVL implements IImmutableAVL {
 	}
 	
 	private IImmutableAVL balanceLeft(int element, IImmutableAVL left, IImmutableAVL right) {
+		if(left == null && right == null) return new ImmutableNullAVL();
+		
+		if(left != null && right != null) {
+			
+		}
+		
 		if (left.getHeight() <= right.getHeight() + 1) {
 			return new ImmutableAVL(element, left, right);
 		} else if (left.getLeftChild().getHeight() > right.getHeight()) {
@@ -101,6 +107,23 @@ public class ImmutableAVL implements IImmutableAVL {
 				new ImmutableAVL(element, left.getRightChild().getRightChild(), right));
 		}
 	}
+	
+//	private IImmutableAVL balanceLeft(int element, IImmutableAVL left, IImmutableAVL right) {
+//		if(left == null && right == null) return new ImmutableNullAVL();
+//		
+//		if(left != null && right != null) {
+//			if (left.getHeight() <= right.getHeight() + 1) {
+//				return new ImmutableAVL(element, left, right);
+//			} else if (left.getLeftChild().getHeight() > right.getHeight()) {
+//				return new ImmutableAVL(left.getElement(), left.getLeftChild(),
+//							new ImmutableAVL(element, left.getRightChild(), right));
+//			} 
+//		}
+//		
+//			return new ImmutableAVL(left.getRightChild().getElement(),
+//				new ImmutableAVL(left.getElement(), left.getLeftChild(), left.getRightChild().getLeftChild()),
+//				new ImmutableAVL(element, left.getRightChild().getRightChild(), right));
+//	}
 
 	private ImmutableAVL balanceRight(int element, IImmutableAVL left, IImmutableAVL right) {
 		if (left.getHeight() + 1 >= right.getHeight()) {

@@ -292,7 +292,6 @@ public class MutableRedBlackTree implements IMutableRedBlackTree, IBenchable {
 		IMutableRedBlackTreeNode node = search(value);
 		
 		if(node.getValue() != value) {
-			Utils.println("There is no node which value is " + value + " in this red black tree.");
 			return null;
 		}
 		
@@ -507,15 +506,17 @@ public class MutableRedBlackTree implements IMutableRedBlackTree, IBenchable {
 	}
 
 	@Override
-	public void benchInsertions(int times) {
-		// TODO Auto-generated method stub
-		
+	public void benchInsertions(IData data, int times) {
+		for(int i = 0; i < times; ++i) {
+			insert(data.getRandomValue());
+		}
 	}
 
 	@Override
-	public void benchRemovals(int times) {
-		// TODO Auto-generated method stub
-		
+	public void benchRemovals(IData data, int times) {
+		for(int i = 0; i < times; ++i) {
+			removeGivenValue(data.getRandomValue());
+		}
 	}
 
 	@Override
@@ -523,6 +524,13 @@ public class MutableRedBlackTree implements IMutableRedBlackTree, IBenchable {
 		root = new MutableRedBlackTreeNode(dataset.get(0), MutableRedBlackTreeNode.BLACK);
 		for(int i = 1; i < creationSize; ++i) {
 			insert(dataset.get(i));
+		}
+	}
+
+	@Override
+	public void benchSearch(IData dataset, int times) {
+		for(int i = 0; i < times; ++i) {
+			search(dataset.getRandomValue());
 		}
 	}
 

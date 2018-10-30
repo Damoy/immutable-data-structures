@@ -54,4 +54,8 @@ public interface IData {
 	 */
 	public IData sort();
 	
+	/**
+	 * Get random value.
+	 */
+	public int getRandomValue();
 }
