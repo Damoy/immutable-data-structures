@@ -59,7 +59,7 @@ public class BenchMutableQueues {
 		String bench = versusBench(BENCH_HINT.SEARCHS, BENCHABLE_STRUCTURE.AVL,
 				BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
 		Utils.println(bench);
-		Utils.writeToFile("AVLvsRedSearchsBench1.csv", ".csv", bench);
+		Utils.writeToFile("AVLvsRedSearchsBench2.csv", ".csv", bench);
 	}
 	
 	private static String versusBench(BENCH_HINT hint, BENCHABLE_STRUCTURE bs1, BENCHABLE_STRUCTURE bs2, String separator) {

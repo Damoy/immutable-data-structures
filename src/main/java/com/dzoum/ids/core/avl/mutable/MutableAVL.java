@@ -356,7 +356,7 @@ public class MutableAVL implements IMutableAVL, IBenchable {
 	@Override
 	public void benchSearch(IData dataset, int times) {
 		for(int i = 0; i < times; ++i) {
-			
+			search(dataset.getRandomValue());
 		}
 	}
 	
