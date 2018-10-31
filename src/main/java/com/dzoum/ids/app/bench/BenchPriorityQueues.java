@@ -1,5 +1,6 @@
 package com.dzoum.ids.app.bench;
 
+import com.dzoum.ids.core.avl.immutable.ImmutableAVL;
 import com.dzoum.ids.core.avl.mutable.MutableAVL;
 import com.dzoum.ids.core.avl.mutable.MutableAVLBuilder;
 import com.dzoum.ids.core.heap.mutable.array.MinMutableArrayHeap;
@@ -9,16 +10,16 @@ import com.dzoum.ids.model.generation.Generator;
 import com.dzoum.ids.utils.Utils;
 
 /**
- * Comparaisons entre tas et arbres de recherches pour
- * utilisation en tant que file de priorité
- * (création à partir d'un tableau de valeur, insertion et supression du minimum)
+ * Code is functional, design was not the objective :/
  */
-public class BenchMutableQueues {
+public class BenchPriorityQueues {
 
 	public static void main(String[] args) {
 		// launchArrayHeapVSAVLBench1();
 		// launchAVLvsRedBench();
-		launchAVLvsRedSearchsBench();
+		// launchAVLvsRedSearchsBench();
+		// launchAVLsCreations();
+		launchAVLsDeletions();
 	}
 	
 	public static void launchArrayHeapVSAVLBench1() {
@@ -60,6 +61,27 @@ public class BenchMutableQueues {
 				BENCHABLE_STRUCTURE.RED_BLACK_TREE, ",");
 		Utils.println(bench);
 		Utils.writeToFile("AVLvsRedSearchsBench2.csv", ".csv", bench);
+	}
+	
+	public static void launchAVLsInsertions() {
+		String bench = versusBench(BENCH_HINT.INSERTIONS, BENCHABLE_STRUCTURE.AVL,
+				BENCHABLE_STRUCTURE.IAVL, ",");
+		Utils.println(bench);
+		Utils.writeToFile("AVLvsIAVLSInsertionsBench1.csv", ".csv", bench);
+	}
+	
+	public static void launchAVLsCreations() {
+		String bench = versusBench(BENCH_HINT.CREATION, BENCHABLE_STRUCTURE.AVL,
+				BENCHABLE_STRUCTURE.IAVL, ",");
+		Utils.println(bench);
+		Utils.writeToFile("AVLvsIAVLSCreationBench1.csv", ".csv", bench);
+	}
+	
+	public static void launchAVLsDeletions() {
+		String bench = versusBench(BENCH_HINT.DELETIONS, BENCHABLE_STRUCTURE.AVL,
+				BENCHABLE_STRUCTURE.IAVL, ",");
+		Utils.println(bench);
+		Utils.writeToFile("AVLvsIAVLSDeletionBench1.csv", ".csv", bench);
 	}
 	
 	private static String versusBench(BENCH_HINT hint, BENCHABLE_STRUCTURE bs1, BENCHABLE_STRUCTURE bs2, String separator) {
@@ -140,7 +162,15 @@ public class BenchMutableQueues {
 			if(hint == BENCH_HINT.CREATION) {
 				innerStart = System.nanoTime();
 				// creation
-				benchable.benchCreate(dataset, dataset.getSize());
+				
+				if(bs == BENCHABLE_STRUCTURE.IAVL) {
+					ImmutableAVL avl = (ImmutableAVL) benchable;
+					avl = (ImmutableAVL) avl.setup(dataset.get(dataset.getSize() - 1));
+					innerStart = System.nanoTime();
+					avl.benchCreateHack(dataset, dataset.getSize() - 1);
+				} else {
+					benchable.benchCreate(dataset, dataset.getSize());
+				}
 			}
 		
 			if(hint == BENCH_HINT.INSERTION_MIN || hint == BENCH_HINT.DELETION_MIN) {
@@ -182,6 +212,11 @@ public class BenchMutableQueues {
 					tree.insert(dataset.get(dataset.getSize() - 1));
 					innerStart = System.nanoTime();
 					tree.benchInsertions(dataset, dataset.getSize() - 1);
+				} else if(bs == BENCHABLE_STRUCTURE.IAVL) {
+					ImmutableAVL avl = (ImmutableAVL) benchable;
+					avl = (ImmutableAVL) avl.setup(dataset.get(dataset.getSize()));
+					innerStart = System.nanoTime();
+					avl.benchInsertions(dataset, dataset.getSize());
 				}
 			}
 			
@@ -196,6 +231,12 @@ public class BenchMutableQueues {
 					tree.setupForBench(dataset, dataset.getSize());
 					innerStart = System.nanoTime();
 					tree.benchRemovals(dataset, dataset.getSize());
+				} else if(bs == BENCHABLE_STRUCTURE.IAVL) {
+					ImmutableAVL avl = (ImmutableAVL) benchable;
+					avl = (ImmutableAVL) avl.setup(dataset.get(dataset.getSize() - 1));
+					avl = avl.benchCreateHack(dataset, dataset.getSize());
+					innerStart = System.nanoTime();
+					avl.benchRemovals(dataset, dataset.getSize());
 				}
 			}
 			
@@ -232,7 +273,7 @@ public class BenchMutableQueues {
 	}
 	
 	private static enum BENCHABLE_STRUCTURE { 
-		HEAP, AVL, RED_BLACK_TREE;
+		HEAP, AVL, RED_BLACK_TREE, IAVL;
 		
 		public static IBenchable get(BENCHABLE_STRUCTURE bs, int capacity) {
 			switch (bs) {
@@ -242,6 +283,8 @@ public class BenchMutableQueues {
 				return (IBenchable) new MutableAVLBuilder().build();
 			case RED_BLACK_TREE:
 				return new MutableRedBlackTree();
+			case IAVL:
+				return new ImmutableAVL();
 			default:
 				throw new IllegalStateException("Unknown structure.");
 			}

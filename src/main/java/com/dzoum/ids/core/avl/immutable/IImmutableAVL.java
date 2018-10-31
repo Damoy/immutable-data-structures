@@ -1,8 +1,9 @@
 package com.dzoum.ids.core.avl.immutable;
 
+import com.dzoum.ids.app.bench.IBenchable;
 import com.dzoum.ids.utils.Utils.Pair;
 
-public interface IImmutableAVL {
+public interface IImmutableAVL extends IBenchable{
 
 	public IImmutableAVL add(int element);
 	public IImmutableAVL remove(int element);

@@ -1,5 +1,6 @@
 package com.dzoum.ids.core.avl.immutable;
 
+import com.dzoum.ids.model.IData;
 import com.dzoum.ids.utils.Utils.Pair;
 
 public class ImmutableNullAVL implements IImmutableAVL {
@@ -8,7 +9,7 @@ public class ImmutableNullAVL implements IImmutableAVL {
 
 	@Override
 	public IImmutableAVL add(int element) {
-		return new ImmutableNullAVL();
+		return this;
 	}
 
 	@Override
@@ -59,6 +60,47 @@ public class ImmutableNullAVL implements IImmutableAVL {
 	@Override
 	public int getSize() {
 		return 0;
+	}
+
+	@Override
+	public void benchCreate(IData dataset, int creationSize) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchInsertMin(int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchRemoveMin(int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchInsertions(IData dataset, int times) {
+		return;
+	}
+
+	@Override
+	public void benchRemovals(IData dataset, int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setupForBench(IData dataset, int creationSize) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchSearch(IData dataset, int times) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

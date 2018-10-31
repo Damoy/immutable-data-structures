@@ -2,6 +2,7 @@ package com.dzoum.ids.core.avl.immutable;
 
 import static com.dzoum.ids.utils.Utils.*;
 
+import com.dzoum.ids.model.IData;
 import com.dzoum.ids.utils.Utils.Pair;
 
 public class ImmutableAVL implements IImmutableAVL {
@@ -18,6 +19,14 @@ public class ImmutableAVL implements IImmutableAVL {
 		this.right = right;
 		this.height = height;
 		this.size = size;
+	}
+	
+	public ImmutableAVL() {
+		this.element = Integer.MIN_VALUE;
+		this.left = null;
+		this.right = null;
+		this.height = 0;
+		this.size = 0;
 	}
 	
 	public ImmutableAVL(int element, IImmutableAVL left, IImmutableAVL right) {
@@ -90,23 +99,65 @@ public class ImmutableAVL implements IImmutableAVL {
 	}
 	
 	private IImmutableAVL balanceLeft(int element, IImmutableAVL left, IImmutableAVL right) {
-		if(left == null && right == null) return new ImmutableNullAVL();
-		
-		if(left != null && right != null) {
-			
-		}
-		
-		if (left.getHeight() <= right.getHeight() + 1) {
-			return new ImmutableAVL(element, left, right);
-		} else if (left.getLeftChild().getHeight() > right.getHeight()) {
-			return new ImmutableAVL(left.getElement(), left.getLeftChild(),
-						new ImmutableAVL(element, left.getRightChild(), right));
+		if(right != null) {
+			if (left.getHeight() <= right.getHeight() + 1) {
+				return new ImmutableAVL(element, left, right);
+			} else if (left.getLeftChild().getHeight() > right.getHeight()) {
+				return new ImmutableAVL(left.getElement(), left.getLeftChild(),
+							new ImmutableAVL(element, left.getRightChild(), right));
+			} else {
+				return new ImmutableAVL(left.getRightChild().getElement(),
+					new ImmutableAVL(left.getElement(), left.getLeftChild(), left.getRightChild().getLeftChild()),
+					new ImmutableAVL(element, left.getRightChild().getRightChild(), right));
+			}
 		} else {
-			return new ImmutableAVL(left.getRightChild().getElement(),
-				new ImmutableAVL(left.getElement(), left.getLeftChild(), left.getRightChild().getLeftChild()),
-				new ImmutableAVL(element, left.getRightChild().getRightChild(), right));
+			if (left.getHeight() <= 1) {
+				return new ImmutableAVL(element, left, right);
+			} else if (left.getLeftChild().getHeight() > 0) {
+				return new ImmutableAVL(left.getElement(), left.getLeftChild(),
+							new ImmutableAVL(element, left.getRightChild(), right));
+			} else {
+				return new ImmutableAVL(left.getRightChild().getElement(),
+					new ImmutableAVL(left.getElement(), left.getLeftChild(), left.getRightChild().getLeftChild()),
+					new ImmutableAVL(element, left.getRightChild().getRightChild(), right));
+			}
 		}
 	}
+	
+//	private IImmutableAVL balanceLeft(int element, IImmutableAVL left, IImmutableAVL right) {
+//		if(left == null && right == null) {
+//			return new ImmutableNullAVL();
+////			if(element < getElement()) {
+////				return new ImmutableAVL(getElement(), new ImmutableAVL(element), null);
+////			} else {
+////				return new ImmutableAVL(getElement(), null, new ImmutableAVL(element));
+////			}
+//		}
+//
+//		if(left == null && element < getElement()) {
+//			return new ImmutableAVL(getElement(), new ImmutableAVL(element),  right);
+//		}
+//		
+//		if(right == null && left != null && left.getRightChild() != null){
+//			return new ImmutableAVL(left.getRightChild().getElement(),
+//					new ImmutableAVL(left.getElement(), left.getLeftChild(), left.getRightChild().getLeftChild()),
+//					new ImmutableAVL(element, left.getRightChild().getRightChild(), right));
+//		}
+//		
+//		if(left != null && right != null) {
+//			if (left.getHeight() <= right.getHeight() + 1) {
+//				return new ImmutableAVL(element, left, right);
+//			} else if (left.getLeftChild().getHeight() > right.getHeight()) {
+//				return new ImmutableAVL(left.getElement(), left.getLeftChild(),
+//							new ImmutableAVL(element, left.getRightChild(), right));
+//			} else {
+//				return new ImmutableAVL(left.getRightChild().getElement(),
+//					new ImmutableAVL(left.getElement(), left.getLeftChild(), left.getRightChild().getLeftChild()),
+//					new ImmutableAVL(element, left.getRightChild().getRightChild(), right));
+//			}
+//		}
+//		throw new IllegalStateException();
+//	}
 	
 //	private IImmutableAVL balanceLeft(int element, IImmutableAVL left, IImmutableAVL right) {
 //		if(left == null && right == null) return new ImmutableNullAVL();
@@ -157,11 +208,14 @@ public class ImmutableAVL implements IImmutableAVL {
 	 */
 	@Override
 	public IImmutableAVL remove(int element) {
+		// TODO FIX
 		int c = compareInts(element, this.element);
 		if (c < 0) {
-			IImmutableAVL left = this.remove(element);
+			IImmutableAVL left = this.left.remove(element);
 			if (left != this.left) {
 				return balanceRight(this.element, left, right);
+			} else {
+				return balanceRight(this.element, new ImmutableAVL(element), right);
 			}
 		} else if (c > 0) {
 			IImmutableAVL right = this.right.remove(element);
@@ -171,8 +225,17 @@ public class ImmutableAVL implements IImmutableAVL {
 		} else if (right instanceof ImmutableNullAVL) {
 			return left;
 		} else {
-			Pair<Integer, IImmutableAVL> p = right.pollFirst();
-			return balanceLeft(p.first, left, p.second);
+			if(right != null && left != null) {
+				Pair<Integer, IImmutableAVL> p = right.pollFirst();
+				return balanceLeft(p.first, left, p.second);
+			} else {
+				if(right == null && left == null) return new ImmutableNullAVL();
+				if(right != null) {
+					return balanceRight(right.getElement(), left, right);
+				} else if(left != null) {
+					return balanceLeft(left.getElement(), left, right);
+				}
+			}
 		}
 		
 		return this;
@@ -220,6 +283,67 @@ public class ImmutableAVL implements IImmutableAVL {
 		sb.append(",");
 		toString(sb, iavl.getLeftChild());
 		toString(sb, iavl.getRightChild());
+	}
+	
+	public IImmutableAVL setup(int element) {
+		return new ImmutableAVL(element);
+	}
+	
+	@Override
+	public void benchCreate(IData dataset, int creationSize) {
+
+	}
+	
+	public ImmutableAVL benchCreateHack(IData dataset, int creationSize) {
+		IData sorted = dataset.clone().sort();
+		return (ImmutableAVL) create(sorted, 0, creationSize);
+	}
+	
+	private IImmutableAVL create(IData dataset, int start, int end) {
+		if(start >= end) return new ImmutableNullAVL();
+		int mid = (end + start) >> 1;
+		return new ImmutableAVL(dataset.get(mid),
+				create(dataset, start, mid - 1), create(dataset, mid + 1, end));  
+	}
+
+	@Override
+	public void benchInsertMin(int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchRemoveMin(int times) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchInsertions(IData dataset, int times) {
+		IImmutableAVL avl = this;
+		for(int i = 0; i < times; ++i) {
+			avl = this.add(dataset.getRandomValue());
+		}
+	}
+
+	@Override
+	public void benchRemovals(IData dataset, int times) {
+		IImmutableAVL avl = this;
+		for(int i = 0; i < times; ++i) {
+			avl = this.remove(dataset.getRandomValue());
+		}
+	}
+
+	@Override
+	public void setupForBench(IData dataset, int creationSize) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void benchSearch(IData dataset, int times) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
