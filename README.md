@@ -1,5 +1,5 @@
 # Java priority queue implementations
-Immutable (and mutable) data structures (Heap, AVL..) implementation.
+Tree data structures (Heap, AVL, Red-black) used as priority queues.
 
 # Authors
 * BENZA Amandine<br>
